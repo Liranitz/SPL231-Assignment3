@@ -14,7 +14,9 @@ public class Subscribe extends Frame {
     public int getId() {
         return id;
     }
-
+    public String getDestination(){
+        return destination;
+    }
     @Override
     public String getType() {
         return null;
