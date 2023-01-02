@@ -5,8 +5,9 @@ import bgu.spl.net.srv.Frame;
 public class Connect extends Frame {
     private String name;
     private String password;
-    public Connect(){
-
+    private String AcceptVersion;
+    public Connect(String version){
+        this.AcceptVersion = version;
     }
     @Override
     public String getType() {
@@ -14,13 +15,13 @@ public class Connect extends Frame {
     }
 
     public String getName(){
-        return "";
+        return name;
     }
 
     public String getAcceptVersion(){
-        return "version 1.2";
+        return AcceptVersion;
     }
     public String getPassword(){
-        return "";
+        return password;
     }
 }

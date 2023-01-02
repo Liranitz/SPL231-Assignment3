@@ -1,4 +1,10 @@
 package bgu.spl.net.srv.FramesForClient;
 
-public class Disconnect {
+import bgu.spl.net.srv.Frame;
+
+public class Disconnect extends Frame {
+    @Override
+    public String getType() {
+        return null;
+    }
 }

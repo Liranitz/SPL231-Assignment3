@@ -1,4 +1,10 @@
 package bgu.spl.net.srv.FramesForClient;
 
-public class Send {
+import bgu.spl.net.srv.Frame;
+
+public class Send extends Frame {
+    @Override
+    public String getType() {
+        return null;
+    }
 }
