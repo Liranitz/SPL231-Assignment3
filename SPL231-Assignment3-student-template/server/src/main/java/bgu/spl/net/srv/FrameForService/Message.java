@@ -1,4 +1,10 @@
 package bgu.spl.net.srv.FrameForService;
 
-public class Message {
+import bgu.spl.net.srv.Frame;
+
+public class Message extends Frame {
+    @Override
+    public String getType() {
+        return "MESSAGE";
+    }
 }

@@ -7,16 +7,13 @@ public class Client {
     private String name;
     private String password;
     private List<String> gamesSubscribedTo;
-    enum Stat{
-        LOGGED_IN,
-        NOT_LOGGED_IN
-    }
+    private boolean logged_in;
 
     public Client(String name , String password){
         this.name = name;
         this.password = password;
         gamesSubscribedTo = new LinkedList<>();
-        Stat = LOGGED_IN;
+        logged_in = true;
     }
     public String getName(){
         return name;
@@ -24,7 +21,12 @@ public class Client {
     public String getPassword(){
         return password;
     }
-
+    public boolean getStat(){
+        return logged_in;
+    }
+    public void setStat(boolean newLogOrNot){
+        logged_in = newLogOrNot;
+    }
     public List<String> getGamesSubscribedTo(){
         return gamesSubscribedTo;
     }

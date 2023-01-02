@@ -3,7 +3,7 @@ package bgu.spl.net.srv.FrameForService;
 import bgu.spl.net.srv.Frame;
 
 public class Connected extends Frame {
-    public Connected(){
+    public Connected() {
         this.Type = "Connected";
     }
 
@@ -12,3 +12,4 @@ public class Connected extends Frame {
         return Type;
     }
 }
+
