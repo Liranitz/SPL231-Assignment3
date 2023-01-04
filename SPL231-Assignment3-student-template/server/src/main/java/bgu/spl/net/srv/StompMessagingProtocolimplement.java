@@ -3,12 +3,18 @@ import bgu.spl.net.api.*;
 import bgu.spl.net.impl.echo.LineMessageEncoderDecoder;
 import bgu.spl.net.srv.Frame;
 import bgu.spl.net.srv.FrameForService.Connected;
+import bgu.spl.net.srv.FrameForService.Error;
+import bgu.spl.net.srv.FrameForService.Receipt;
 import bgu.spl.net.srv.FramesForClient.Connect;
+import bgu.spl.net.srv.FramesForClient.Subscribe;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame>{
     private ConnectionImpl<Frame> connectionsImpl;
     private int curId;
     private String[] curArrayMessage;
+    private
 
     public void start(int connectionId, Connections connections) {
         this.connectionsImpl = (ConnectionImpl) connections;
@@ -23,24 +29,50 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
         //String stat = curArrayMessage[0];
         switch (curStringMessage){
             case "CONNECT":
-                Connect cur = (Connect) message;
-                if(ClientController.clientsByName.get(cur.getName()) != null){
-                    // let password be ok
-                    // change to log in
+                Connect curFrame = (Connect) message;
+                Client cl = ClientController.clientsByName.get(curFrame.getName());
+                if (cl != null){
+                   if(curFrame.getPassword() == cl.getPassword()){//check if the password is correct
+                       if (!cl.getStat()){//check if the user logged in
+                           cl.setStat(true);
+                           ret = new Connected();
+                       }
+                       else{
+                           ret = new Error ("The client is already logged in, log out before trying again");
+                       }
+                   }
+                   else
+                       ret = new Error ("Wrong password");
+                }
+
+                else{//new user
+                    Client newClient = new Client(curFrame.getName(), curFrame.getPassword());
+                    ClientController.clientsByName.put(curFrame.getName(), newClient);
+                    ClientController.clientsByConnectionHandlerId.put(curId, newClient);
                     ret = new Connected();
                 }
-                else{
-                    //ret = new Error();
-                }
 
-            // make a new client and send CONNECTED STOMP or send an error message
-                // if he already exist and not logged in : log him in only if password is ok
-                // else log him in
-                // if not exist add to a list
-            //connectionsImpl.send(curId ,);
 
             case "SUBSCRIBE":
-                //
+
+                Subscribe sub = (Subscribe) message;
+                if (!ClientController.topics.containsKey(sub.getDestination())){
+                    ClientController.topics.put(getDestination() , new ConcurrentLinkedQueue<>());
+
+
+
+                ConcurrentLinkedQueue<Client> clientsQueue = ClientController.topics.get(sub.getDestination());
+                if (clientsQueue != null){// if it is null??????
+                    if (clientsQueue.contains()).
+
+
+                }
+
+                    if
+                }
+                if
+
+
 
         }
         connectionsImpl.send(curId, ret);
