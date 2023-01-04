@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame>{
     private ConnectionImpl<Frame> connectionsImpl;
+    // curId - connection handler ID
     private int curId;
     private String[] curArrayMessage;
     private
@@ -54,25 +55,19 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
 
 
             case "SUBSCRIBE":
-
+                //A client try to subscribe to a topic , if the topic doesn't exist, create one.
                 Subscribe sub = (Subscribe) message;
-                if (!ClientController.topics.containsKey(sub.getDestination())){
-                    ClientController.topics.put(getDestination() , new ConcurrentLinkedQueue<>());
-
-
-
+                String curTopic = sub.getDestination();
+                if (!ClientController.topics.containsKey(curTopic)) {
+                    ClientController.topics.put(curTopic, new ConcurrentLinkedQueue<>());
+                }
+                //figure out what to do with the id
+                int id = sub.getId();
+                ClientController.topics.get(curTopic).add(ClientController.clientsByConnectionHandlerId.get(curId));
                 ConcurrentLinkedQueue<Client> clientsQueue = ClientController.topics.get(sub.getDestination());
+
                 if (clientsQueue != null){// if it is null??????
-                    if (clientsQueue.contains()).
-
-
-                }
-
-                    if
-                }
-                if
-
-
+                    if (clientsQueue.contains())
 
         }
         connectionsImpl.send(curId, ret);
