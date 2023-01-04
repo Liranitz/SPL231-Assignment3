@@ -6,10 +6,9 @@ public class Subscribe extends Frame {
     private String destination;
     private int id;
     private int receiptId;
-    public Subscribe(String destination , int id , int receipt){
+    public Subscribe(String destination , int id){
         this.destination = destination;
         this.id = id;
-        this.receiptId = receipt;
     }
     public int getId() {
         return id;
@@ -19,11 +18,8 @@ public class Subscribe extends Frame {
     }
     @Override
     public String getType() {
-        return null;
+        return "SUBSCRIBE";
     }
 
-    public int getReceipt() {
-        return receiptId;
-    }
 }
 

@@ -31,4 +31,8 @@ public class ConnectionImpl<T> implements Connections<T>{
     public void disconnect(int connectionId) { //
 
     }
+
+    public void addNewConnectionHandler(int key, ConnectionHandler handler) {
+        connection_Map.putIfAbsent(key, handler);
+    }
 }

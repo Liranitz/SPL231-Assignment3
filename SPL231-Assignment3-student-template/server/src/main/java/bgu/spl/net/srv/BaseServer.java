@@ -2,6 +2,8 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocol;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,19 +12,23 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> { // thread per client
 
     private final int port;
-    private final Supplier<MessagingProtocol<T>> protocolFactory;
-    private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
+    private final Supplier<StompMessagingProtocolimplement> protocolFactory;
+    private final Supplier<EncoderDecoderImplement> encdecFactory;
     private ServerSocket sock;
+    private ConnectionImpl<Frame> connections;
+    private int  connectionsHandlerId;
 
     public BaseServer(
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
-            Supplier<MessageEncoderDecoder<T>> encdecFactory) {
+            Supplier<StompMessagingProtocolimplement> protocolFactory,
+            Supplier<EncoderDecoderImplement> encdecFactory) {
 
         this.port = port;
         this.protocolFactory = protocolFactory;
         this.encdecFactory = encdecFactory;
 		this.sock = null;
+        connections = new ConnectionImpl<>();
+        connectionsHandlerId = 1;
     }
 
     @Override
@@ -36,11 +42,16 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
             while (!Thread.currentThread().isInterrupted()) {
 
                 Socket clientSock = serverSock.accept();
+                StompMessagingProtocolimplement protocol = protocolFactory.get();
 
-                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
+                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler(
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
+                        protocol,
+                        connectionsHandlerId,
+                        connections);
+                connections.addNewConnectionHandler(connectionsHandlerId, handler);
+                connectionsHandlerId++;
 
                 execute(handler);
             }

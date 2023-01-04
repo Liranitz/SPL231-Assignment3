@@ -12,16 +12,20 @@ public class EchoClient {
     public static void main(String[] args) throws IOException {
 
         if (args.length == 0) {
-            args = new String[]{"localhost", "hello"};
+            args = new String[2];
+            args[0] = "localhost";
+            args[1] = "SUBSCRIBE";
+
+            int i=1;
         }
 
-        if (args.length < 2) {
+       /* if (args.length < 2) {
             System.out.println("you must supply two arguments: host, message");
             System.exit(1);
-        }
+        }*/
 
         //BufferedReader and BufferedWriter automatically using UTF-8 encoding
-        try (Socket sock = new Socket(args[0], 7777);
+        try (Socket sock = new Socket(args[0], 77);
                 BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()))) {
 

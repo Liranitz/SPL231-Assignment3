@@ -3,11 +3,15 @@ package bgu.spl.net.srv.FramesForClient;
 import bgu.spl.net.srv.Frame;
 
 public class Connect extends Frame {
-    private String name;
+    private String nameLogin;
     private String password;
+    private String host;
     private String AcceptVersion;
-    public Connect(String version){
+    public Connect(String version, String host, String name, String passcode ){
         this.AcceptVersion = version;
+        this.host = host;
+        this.nameLogin = name;
+        this.password = passcode;
     }
     @Override
     public String getType() {
@@ -15,7 +19,7 @@ public class Connect extends Frame {
     }
 
     public String getName(){
-        return name;
+        return nameLogin;
     }
 
     public String getAcceptVersion(){
