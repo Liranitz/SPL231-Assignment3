@@ -1,18 +1,29 @@
 package bgu.spl.net.impl.newsfeed;
 
 import bgu.spl.net.impl.rci.RCIClient;
+import bgu.spl.net.srv.ConnectionImpl;
+import bgu.spl.net.srv.Frame;
+import bgu.spl.net.srv.FramesForClient.Subscribe;
+import bgu.spl.net.srv.StompMessagingProtocolimplement;
 
 public class NewsFeedClientMain {
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 0) {
-            args = new String[]{"127.0.0.1"};
-        }
+        //if (args.length == 0) ;
 
 //        System.out.println("running clients");
-        runFirstClient(args[0]);
-        runSecondClient(args[0]);
-        runThirdClient(args[0]);
+        //runFirstClient(args[0]);
+        //runSecondClient(args[0]);
+        //runThirdClient(args[0]);
+
+
+        StompMessagingProtocolimplement cur = new StompMessagingProtocolimplement();
+        ConnectionImpl<Frame> curCon = new ConnectionImpl();
+        Subscribe sub = new Subscribe("jermany_spain", 78);
+        cur.start(7777 , curCon);
+        cur.process(sub);
+        System.out.println();
+
     }
 
     private static void runFirstClient(String host) throws Exception {

@@ -8,7 +8,7 @@ public class Client {
     private String name;
     private String password;
     private List<String> gamesSubscribedTo;
-    private HashMap<Integer , String>;
+    //private HashMap<Integer , String>;
     private boolean logged_in;
 
     public Client(String name , String password){
