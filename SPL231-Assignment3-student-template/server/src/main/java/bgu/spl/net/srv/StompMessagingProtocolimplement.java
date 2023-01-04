@@ -30,7 +30,7 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     ret = new Connected();
                 }
                 else{
-                    ret = new Error();
+                    //ret = new Error();
                 }
 
             // make a new client and send CONNECTED STOMP or send an error message
