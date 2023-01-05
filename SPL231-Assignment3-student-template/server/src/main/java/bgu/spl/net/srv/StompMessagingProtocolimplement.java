@@ -6,92 +6,107 @@ import bgu.spl.net.srv.FrameForService.Connected;
 import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FrameForService.Message;
 import bgu.spl.net.srv.FrameForService.Receipt;
-import bgu.spl.net.srv.FramesForClient.Connect;
-import bgu.spl.net.srv.FramesForClient.Send;
-import bgu.spl.net.srv.FramesForClient.Subscribe;
-import bgu.spl.net.srv.FramesForClient.Unsubscribe;
+import bgu.spl.net.srv.FramesForClient.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame>{
     private ConnectionImpl<Frame> connectionsImpl;
     // curId - connection handler ID
-    private int curId;
+    private int connectionHandlerId;
     private String[] curArrayMessage;
 
 
     public void start(int connectionId, Connections connections) {
         this.connectionsImpl = (ConnectionImpl) connections;
-        this.curId = connectionId;
+        this.connectionHandlerId = connectionId;
         curArrayMessage = null;
     }
 
     @Override
     public void process(Frame message) {
         Frame ret = null;
-        String curStringMessage = message.getType();
+        String type = message.getType();
         ClientController.counterReciept++;
-        switch (curStringMessage) {
+        switch (type) {
             case "CONNECT":
                 Connect curFrame = (Connect) message;
                 Client cl = ClientController.clientsByName.get(curFrame.getName());
-                if (cl != null) {
-                    if (curFrame.getPassword() == cl.getPassword()) {//check if the password is correct
-                        if (!cl.getStat()) {//check if the user logged in
-                            cl.setStat(true);
-                            ret = new Connected();
-                        } else {
-                            ret = new Error("The client is already logged in, log out before trying again");
-                        }
-                    } else
-                        ret = new Error("Wrong password");
-                } else {//new user
-                    Client newClient = new Client(curFrame.getName(), curFrame.getPassword());
+                if (ClientController.clientsByConnectionHandlerId.contains(connectionHandlerId)){//already have a user
+                    Error eror = new Error("already have a user for this client");
+                    ret = eror;
+                }
+
+                else if (cl == null) {//new user- need to registr him
+                    Client newClient = new Client(curFrame.getName(), curFrame.getPassword()); //new user want to register
                     ClientController.clientsByName.put(curFrame.getName(), newClient);
-                    ClientController.clientsByConnectionHandlerId.put(curId, newClient);
+                    ClientController.clientsByConnectionHandlerId.put(connectionHandlerId, newClient);
                     ret = new Connected();
+                    }
+
+                else{//the client already exist
+                    if (!curFrame.getPassword().equals(cl.getPassword())) //check if the password is correct
+                        ret = new Error("Wrong password");//wrong passowrd
+                    else if(cl.isConnected())//check if already connected
+                        ret = new Error("User already logged in");//alredy logged in
+                    else{//login
+                        cl.setStat(true);
+                        ret = new Connected();
+                    }
                 }
                 break;
 
             case "UNSUBSCRIBE":
-                Unsubscribe usnSub = (Unsubscribe) message;
+                Unsubscribe unsSub = (Unsubscribe) message;
                 try{
-                    int id = usnSub.getCurId();
-                    String destination = ClientController.topics_by_connectionID.get(id);
-                    ClientController.topics.get(destination).remove(id);
-                    ClientController.topics_by_connectionID.remove(id);
-                    Receipt rec = new Receipt(id);
+                    int unSubId = unsSub.getCurId();
+                    String unSubTopic = ClientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId).get(unSubId);
+                    ClientController.topics.get(unSubTopic).remove(connectionHandlerId); //remove from the specific channel map
+                    ClientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId).remove(unSubId);//remove from the map subscripion of the client
+                    Receipt rec = new Receipt(unSubId);
                     ret = rec;
                 }
                 catch(Exception ex){
-                Error er = new Error("You did not suscribe to that destination");// nee more detailed erorr????????
+                Error eror = new Error("You did not subscribe to that destination");// nee more detailed erorr????????
+                    ret = eror;
             }
                 break;
                 case "SUBSCRIBE":
                     //A client try to subscribe to a topic , if the topic doesn't exist, create one.
                     Subscribe sub = (Subscribe) message;
-                    String curTopic = sub.getDestination();
-                    if (!ClientController.topics.containsKey(curTopic)) {
-                        ClientController.topics.put(curTopic, new ConcurrentLinkedQueue<>());
-                    }
-                    int id = sub.getId();
-                    //add the client to the queue
+
+                    //1. ensure that the client exist- is it nessecery????
                     Client curClient = null;
                     try {
-                        curClient = ClientController.clientsByConnectionHandlerId.get(curId);
+                        curClient = ClientController.clientsByConnectionHandlerId.get(connectionHandlerId);
                     } catch (NullPointerException exception) {
-                        //return new error with the description that there is no client exist
+                        //return new error with the description that there is no client exist- or maybe this check do not occur here?
                     }
+
+                    //2. make a new channel (topic) in case that not exist
+                    String curTopic = sub.getDestination();
+                    if (!ClientController.topics.containsKey(curTopic)) {
+                        ClientController.topics.put(curTopic, new ConcurrentHashMap<>());
+                    }
+
+
+                    //3. add the client to the queue which represented by topics
                     if (curClient != null)
-                        try {
-                            ClientController.topics.get(curTopic).add(curClient);
-                        } catch (NullPointerException exception) {
-                            //return new error with the description that there is no topic exist
-                        }
-                    //add the connection between the connection handler too the topic
-                    ClientController.topics_by_connectionID.put(id, curTopic);
-                    ret = new Receipt(ClientController.counterReciept);
+                        ClientController.topics.get(curTopic).put(connectionHandlerId, curClient);
+
+                    //4. add the the subscribeId to the list of the client subscription
+                    int subId = sub.getId();
+                    try {
+                        ClientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId).put(subId, curTopic);
+                    }
+                    catch (NullPointerException exception){//his first subscribed not have any subscrition- add the user to the map to the map
+                        ConcurrentHashMap <Integer, String> subscriptions = new ConcurrentHashMap<>();
+                        subscriptions.put(subId, curTopic);
+                        ClientController.subscribeIdByconnectionsHandlerId.put(connectionHandlerId, subscriptions);
+                    }
+                    ret = new Receipt(subId);
                     break;
 
                 case "SEND":
@@ -102,9 +117,25 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     //int messageReceipt = new int..
                     break;
 
+            case "DISCONNECT": // need to remove from all topics
+                Disconnect disconnectMessage = (Disconnect) message;
+                ConcurrentHashMap<Integer, String> subscriptions =  ClientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId);
+                for (ConcurrentHashMap<Integer, Client> topicMap : ClientController.topics.values()){ // remove the user from each topic he belongs.
+                    try {
+                        topicMap.remove(connectionHandlerId);
+                    }
+                    catch (NullPointerException exception){
+                        //not found in the list
+                    }
+                }
+                ClientController.subscribeIdByconnectionsHandlerId.remove(connectionHandlerId); // remove from the subscription list
+                Receipt rec = new Receipt(disconnectMessage.getId());
+                ret = rec;
+                break;
+
 
             }
-            connectionsImpl.send(curId, ret);
+            connectionsImpl.send(connectionHandlerId, ret);
         }
 
 

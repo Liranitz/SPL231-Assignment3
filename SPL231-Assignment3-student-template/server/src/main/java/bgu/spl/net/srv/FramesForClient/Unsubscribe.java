@@ -15,6 +15,11 @@ public class Unsubscribe extends Frame {
 
     @Override
     public String getType() {
+        return "UNSUBSCRIBE";
+    }
+
+    @Override
+    public String toString() {
         return null;
     }
 

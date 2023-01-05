@@ -19,7 +19,7 @@ public class NewsFeedClientMain {
 
         StompMessagingProtocolimplement cur = new StompMessagingProtocolimplement();
         ConnectionImpl<Frame> curCon = new ConnectionImpl();
-        Subscribe sub = new Subscribe("jermany_spain", 78);
+        Subscribe sub = new Subscribe(  "jermany_spain", 78);
         cur.start(7777 , curCon);
         cur.process(sub);
         System.out.println();

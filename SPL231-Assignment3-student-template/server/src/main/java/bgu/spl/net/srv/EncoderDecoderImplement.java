@@ -59,7 +59,7 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
                 return new Send(frameParts[1].split(":")[1]);
 
             if (type.equals("SUBSCRIBE"))
-                return new Subscribe(frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]));
+                return new Subscribe( frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]));
 
             if (type.equals("UNSUBSCRIBE"))
                 return new Unsubscribe( Integer.parseInt(frameParts[1].split(":")[1]));
@@ -70,8 +70,14 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
             @Override
             public byte[] encode (Frame message){
-                return new byte[0];
+                return (message.toString() + "\n").getBytes();
             }
+
+    public byte[] encode (String message){
+        byte[] a = message.toString().getBytes();
+        byte[] b = (message.toString() + "\n").getBytes();
+        return (message.toString() + "\n").getBytes();
+    }
 
         }
 

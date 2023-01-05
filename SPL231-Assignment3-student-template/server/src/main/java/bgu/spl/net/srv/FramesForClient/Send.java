@@ -12,4 +12,9 @@ public class Send extends Frame {
     public String getType() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return null;
+    }
 }

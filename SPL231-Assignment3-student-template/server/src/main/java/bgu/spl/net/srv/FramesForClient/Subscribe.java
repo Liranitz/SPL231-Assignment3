@@ -5,10 +5,9 @@ import bgu.spl.net.srv.Frame;
 public class Subscribe extends Frame {
     private String destination;
     private int id;
-    private int receiptId;
-    public Subscribe(String destination , int id){
+    public Subscribe( String destination, int id ){
+       this.id = id;
         this.destination = destination;
-        this.id = id;
     }
     public int getId() {
         return id;
@@ -19,6 +18,11 @@ public class Subscribe extends Frame {
     @Override
     public String getType() {
         return "SUBSCRIBE";
+    }
+
+    @Override
+    public String toString() {
+        return null;
     }
 
 }

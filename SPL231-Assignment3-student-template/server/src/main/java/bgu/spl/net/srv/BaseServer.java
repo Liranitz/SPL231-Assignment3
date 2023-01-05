@@ -18,7 +18,7 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
     private ConnectionImpl<Frame> connections;
     private int  connectionsHandlerId;
 
-    public BaseServer(
+    public BaseServer(// need to check if the clien already logged in here or in the client protocol?????????
             int port,
             Supplier<StompMessagingProtocolimplement> protocolFactory,
             Supplier<EncoderDecoderImplement> encdecFactory) {
@@ -50,8 +50,8 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
                         protocol,
                         connectionsHandlerId,
                         connections);
-                connections.addNewConnectionHandler(connectionsHandlerId, handler);
-                connectionsHandlerId++;
+                connections.addNewConnectionHandler(connectionsHandlerId, handler); // add new connection to the connectionMap- is the id unique per trting of connection or per client???????????????
+                connectionsHandlerId++; //just for testing need to rmove note
 
                 execute(handler);
             }

@@ -23,7 +23,7 @@ public class Client {
     public String getPassword(){
         return password;
     }
-    public boolean getStat(){
+    public boolean isConnected(){
         return logged_in;
     }
     public void setStat(boolean newLogOrNot){

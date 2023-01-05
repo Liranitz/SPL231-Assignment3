@@ -15,5 +15,12 @@ public class Connected extends Frame {
     public String getMessage(){
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "CONNECTED\n" +
+                "version :1.2" + '\n' +
+                '\u0000';
+    }
 }
 

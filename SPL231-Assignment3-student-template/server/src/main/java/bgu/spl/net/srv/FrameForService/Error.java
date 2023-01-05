@@ -28,7 +28,9 @@ public class Error extends Frame {
 
     public String toString(){
         //TODO impelement
-        //dont forget ^@ at the bottom
-        return "";
+        return "ERROR\n" +
+                errorMessage + '\n' +
+                '\u0000';
+
     }
 }

@@ -12,4 +12,14 @@ public class Receipt extends Frame {
     public String getType() {
         return "RECEIPT";
     }
+
+    @Override
+    public String toString() {
+
+        return "RECEIPT\n"+
+                "receipt-id:"+receiptId+ '\n' +
+                '\u0000';
+    }
+
+
 }

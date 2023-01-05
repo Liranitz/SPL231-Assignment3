@@ -11,4 +11,9 @@ public class Message extends Frame {
     public String getType() {
         return "MESSAGE";
     }
+
+    @Override
+    public String toString() {
+        return null;
+    }
 }

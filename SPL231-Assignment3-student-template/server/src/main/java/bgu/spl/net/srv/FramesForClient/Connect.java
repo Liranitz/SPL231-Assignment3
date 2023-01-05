@@ -28,4 +28,9 @@ public class Connect extends Frame {
     public String getPassword(){
         return password;
     }
+
+    @Override
+    public String toString() {
+        return null;
+    }
 }
