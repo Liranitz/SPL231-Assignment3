@@ -7,7 +7,7 @@ class ClientReader {
 public:
     //~Keyboardinput();
     ClientReader(ConnectionHandler &c_h);
-    void read();
+    void read(ConnectionHandler &c_h);
 private:
     ConnectionHandler &c_h;
     string bookName(int start, int end, vector<string> all);

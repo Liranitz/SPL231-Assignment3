@@ -7,7 +7,7 @@ class KeyBoard_imp {
 public:
     //~Keyboardinput();
     KeyBoard_imp(ConnectionHandler &c_H);
-    void input();
+    void input(ConnectionHandler &c_h);
 private:
     vector<string> result();
     vector<string> split(const string &stringToSplit, char delimiter);

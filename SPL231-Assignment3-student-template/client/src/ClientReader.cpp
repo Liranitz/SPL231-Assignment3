@@ -7,7 +7,7 @@ using namespace std;
 
 ClientReader::ClientReader(ConnectionHandler &c_h) : c_h(c_h){}
 
-void ClientReader::read() {
+void ClientReader::read(ConnectionHandler &c_h) {
     while(1){ // figure out if need to be otherway
         string cur_output = "";
         c_h.getLine(cur_output);
@@ -17,9 +17,8 @@ void ClientReader::read() {
         if (typeMessage == "RECEIPT"){
             //succeeded to log in sub or unsub
             // gets receipt , save it?
-
         }
-        else{
+        else if (typeMessage == "ERROR"){
             // do nothing
         }
 

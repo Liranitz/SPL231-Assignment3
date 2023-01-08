@@ -1,16 +1,14 @@
-#include <iostream>
-#include <vector>
-#include <iterator>
-#include <KeyBoard_imp.h>
-//#include <bits/stdc++.h>
-#include <boost/algorithm/string.hpp>
+#include <StompProtocol.h>
+#include <stdlib.h>
+#include "ConnectionHandler.h"
+#include "../include/KeyBoard_imp.h"
+using namespace boost;
+#include <boost/algorithm/string.hpp>;
+#include <ClientReader.h>
 
-using namespace std;
+string StompProtocol::parse_to_frame(string input_string){
 
-KeyBoard_imp::KeyBoard_imp(ConnectionHandler &c_h) : c_h(c_h){}
-
-void KeyBoard_imp::input(ConnectionHandler &c_h) {
-    while(1){ // figure out if need to be otherway
+    //while(1){ // figure out if need to be otherway
         string output_frame = "";
         string cur_input= "";
         getline(cin , cur_input);
@@ -35,7 +33,7 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
 
         }
         else if(typeMessage == "join"){
-            output_frame =+"SUBSCRIBE"+'\n';
+            output_frame =+"SUBSCRIBE"+'\n'; // how to save or when i extract the receipt id?
             output_frame =+"destination"+result[1]+'\n';
             output_frame =+"id: client's id"+'\n'; // find the id
             output_frame =+"receipt: num of rec" +'\n'; // find the num rec
@@ -67,7 +65,9 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
         }
         if(!output_frame._Equal("")) // or otherways
         {
-            c_h.sendLine(output_frame);
             result.clear();
+            return output_frame;
         }
-    }
+    //}
+
+}
