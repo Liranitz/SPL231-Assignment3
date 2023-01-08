@@ -1,4 +1,5 @@
 #include "../include/ConnectionHandler.h"
+//include <boost>
 
 using boost::asio::ip::tcp;
 
@@ -24,7 +25,7 @@ bool ConnectionHandler::connect() {
 		socket_.connect(endpoint, error);
 		if (error)
 			throw boost::system::system_error(error);
-	}
+	}	
 	catch (std::exception &e) {
 		std::cerr << "Connection failed (Error: " << e.what() << ')' << std::endl;
 		return false;

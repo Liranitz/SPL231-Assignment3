@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/SPL231-Assignment3-student-template/client/include",
+                "C:/Program Files/Boost/boost_1_81_0"
             ],
             "defines": [
                 "_DEBUG",
@@ -20,8 +21,7 @@
         {
             "name": "Liran",
             "includePath": [
-                "${workspaceFolder}/**",
-                "C:/Program Files/Boost/boost_1_81_0/boost"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
