@@ -22,9 +22,6 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
             //if(c_h.isConnect()) check if the res[1] (host) is already connected  
             // to another port.
             // socket error, cannoot
-
-            //try to connect the CH , res[1] ,' : ' res[1]
-            //c_h.connect();
             output_frame =+"CONNECT"+'\n';
             output_frame =+"accept-version :1.2"+'\n'; // there is a " " between the 2?
             output_frame =+"host:stomp.cs.bgu.ac.il"+'\n';

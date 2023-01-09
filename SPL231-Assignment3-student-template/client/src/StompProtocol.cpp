@@ -63,6 +63,7 @@ string StompProtocol::parse_to_frame(string input_string){
             output_frame =+'\n';
             output_frame =+'^@';    
         }
+        
         if(!output_frame._Equal("")) // or otherways
         {
             result.clear();

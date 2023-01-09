@@ -5,6 +5,7 @@
 class StompProtocol
 {
 private:
+
 public: 
- string static StompProtocol::parse_to_frame(string input_string);
+ string static parse_to_frame(string input_string);
 };
