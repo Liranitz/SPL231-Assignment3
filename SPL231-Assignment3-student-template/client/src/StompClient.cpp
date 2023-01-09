@@ -1,38 +1,17 @@
 #include <stdlib.h>
 #include "ConnectionHandler.h"
 #include "../include/KeyBoard_imp.h"
+
 using namespace boost;
-#include <boost/algorithm/string.hpp>;
-#include <ClientReader.h>
-#include <StompProtocol.h>
-/**
-* This code assumes that the server replies the exact text the client sent it (as opposed to the practical session example)
-*/
-int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 2 - port
-    //if (argc < 3) {
-    //    std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
-    //    return -1;
-    //*
+using namespace std;
 
-    vector<string> ret = wait_for_login();
-    vector<string> ports = boost::split(ports, ret[1], boost::is_any_of(":"));
-    std::string host = ports[1];
-    const char* charArray = ports[2].c_str();
-    short port = atoi(charArray);
+#include "boost/algorithm/string.hpp"
+#include "ClientReader.h"
+#include "StompProtocol.h"
+#include <thread>
+#include <boost/thread.hpp>
 
-    ConnectionHandler connectionHandler(host,port); // figure out how
-    //KeyBoard_imp keybor(connectionHandler);
-    if (!connectionHandler.connect()) {
-        std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
-        return 1;
-        // figure out how to get back to the function
-    }
-    std::thread read_input_thread(&input_from_keyboard ,std::ref(connectionHandler));
-    std::thread read_socket_thread(&read_from_socket ,std::ref(connectionHandler));
-    read_input_thread.join();
-    read_socket_thread.join();
-    return 0;
-}
+
 
 void input_from_keyboard(ConnectionHandler &connectionHandler){
     while (1) { // need to be like that?
@@ -75,6 +54,7 @@ vector<string> wait_for_login(){
     }
 }
 
+
 void read_from_socket(ConnectionHandler &connectionHandler){
     while(1){
     std::string answer;
@@ -85,7 +65,7 @@ void read_from_socket(ConnectionHandler &connectionHandler){
             std::cout << "Disconnected. Exiting...\n" << std::endl;
             break; // wait for null charachter
         }
-		int len = answer.length();
+		len = answer.length();
 		//
         
         // A C string must end with a 0 char delimiter.  When we filled the answer buffer from the socket
@@ -98,3 +78,36 @@ void read_from_socket(ConnectionHandler &connectionHandler){
         }
     }
 }
+
+/**
+ * 
+* This code assumes that the server replies the exact text the client sent it (as opposed to the practical session example)
+*/
+int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 2 - port
+    //if (argc < 3) {
+    //    std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
+    //    return -1;
+    //*
+
+    vector<string> ret;
+    ret = wait_for_login();
+    vector<string> ports = boost::split(ports, ret[1], boost::is_any_of(":"));
+    std::string host = ports[1];
+    const char* charArray = ports[2].c_str();
+    short port = atoi(charArray);
+
+    ConnectionHandler connectionHandler(host,port); // figure out how
+    //KeyBoard_imp keybor(connectionHandler);
+    if (!connectionHandler.connect()) {
+        std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
+        return 1;
+        // figure out how to get back to the function
+    }
+
+    std::thread read_input_thread(&input_from_keyboard ,std::ref(connectionHandler));
+    std::thread read_socket_thread(&read_from_socket ,std::ref(connectionHandler));
+    read_input_thread.join();
+    read_socket_thread.join();
+    return 0;
+}
+
