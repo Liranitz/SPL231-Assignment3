@@ -11,12 +11,12 @@ using std::string;
 std::string StompProtocol::parse_to_frame(string input_string){
 
     //while(1){ // figure out if need to be otherway
-        string output_frame = "";
-        string cur_input= "";
+        std::string output_frame = "";
+        std::string cur_input= "";
         getline(cin , cur_input);
-        vector<string> result;
+        std::vector<std::string> result;
         result = boost::split(result, cur_input, boost::is_any_of(" "));
-        string typeMessage = result[0];
+        std::string typeMessage = result[0];
         if (typeMessage == "login"){
             //log in to the server
             //if(c_h.isConnect()) check if the res[1] (host) is already connected  
@@ -65,7 +65,7 @@ std::string StompProtocol::parse_to_frame(string input_string){
             output_frame += '\0';
         }
         
-        if(!output_frame._Equal("")) // or otherways
+        if(output_frame != "") // or otherways
         {
             result.clear();
             return output_frame;

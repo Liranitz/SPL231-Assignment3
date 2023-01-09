@@ -62,9 +62,10 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
             output_frame =+'\n';
             output_frame =+'^@';    
         }
-        if(!output_frame._Equal("")) // or otherways
+        if(output_frame != "") // or otherways
         {
             c_h.sendLine(output_frame);
             result.clear();
         }
     }
+}
