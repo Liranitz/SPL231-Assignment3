@@ -3,10 +3,12 @@
 #include "ConnectionHandler.h"
 #include "../include/KeyBoard_imp.h"
 using namespace boost;
-#include <boost/algorithm/string.hpp>;
+using std::string;
+
+#include <boost/algorithm/string.hpp>
 #include <ClientReader.h>
 
-string StompProtocol::parse_to_frame(string input_string){
+std::string StompProtocol::parse_to_frame(string input_string){
 
     //while(1){ // figure out if need to be otherway
         string output_frame = "";
@@ -23,29 +25,28 @@ string StompProtocol::parse_to_frame(string input_string){
 
             //try to connect the CH , res[1] ,' : ' res[1]
             //c_h.connect();
-            output_frame =+"CONNECT"+'\n';
-            output_frame =+"accept-version :1.2"+'\n'; // there is a " " between the 2?
-            output_frame =+"host:stomp.cs.bgu.ac.il"+'\n';
-            output_frame =+"login:"+result[2]+'\n';
-            output_frame =+"password:"+result[3]+'\n';
-            output_frame =+'\n';
-            output_frame =+'^@';
-
+            output_frame +="CONNECT"+'\n';
+            output_frame +="accept-version :1.2"+'\n'; // there is a " " between the 2?
+            output_frame +="host:stomp.cs.bgu.ac.il"+'\n';
+            output_frame +="login:"+result[2]+'\n';
+            output_frame +="password:"+result[3]+'\n';
+            output_frame +='\n';
+            output_frame += '\0';
         }
         else if(typeMessage == "join"){
-            output_frame =+"SUBSCRIBE"+'\n'; // how to save or when i extract the receipt id?
-            output_frame =+"destination"+result[1]+'\n';
-            output_frame =+"id: client's id"+'\n'; // find the id
-            output_frame =+"receipt: num of rec" +'\n'; // find the num rec
-            output_frame =+'\n';
-            output_frame =+'^@';
+            output_frame +="SUBSCRIBE"+'\n'; // how to save or when i extract the receipt id?
+            output_frame +="destination"+result[1]+'\n';
+            output_frame +="id: client's id"+'\n'; // find the id
+            output_frame +="receipt: num of rec" +'\n'; // find the num rec
+            output_frame +='\n';
+            output_frame += '\0';
         }
         else if(typeMessage == "exit"){
-            output_frame =+"UNSUBSCRIBE"+'\n';
-            output_frame =+"id: client's id"+'\n'; // find the id
-            output_frame =+"receipt: num of rec" +'\n'; // find the num rec
-            output_frame =+'\n';
-            output_frame =+'^@';    
+            output_frame +="UNSUBSCRIBE"+'\n';
+            output_frame +="id: client's id"+'\n'; // find the id
+            output_frame +="receipt: num of rec" +'\n'; // find the num rec
+            output_frame +='\n';
+            output_frame += '\0';
         }
         else if(typeMessage == "report"){
             //read to parser funciton
@@ -58,10 +59,10 @@ string StompProtocol::parse_to_frame(string input_string){
             //parse to the file_name the events that happend.
         }
         else if(typeMessage == "logout"){
-            output_frame =+"DISCONNECT"+'\n';
-            output_frame =+"receipt: num of rec" +'\n'; // find the num rec
-            output_frame =+'\n';
-            output_frame =+'^@';    
+            output_frame +="DISCONNECT"+'\n';
+            output_frame +="receipt: num of rec" +'\n'; // find the num rec
+            output_frame +='\n';
+            output_frame += '\0';
         }
         
         if(!output_frame._Equal("")) // or otherways
@@ -70,5 +71,4 @@ string StompProtocol::parse_to_frame(string input_string){
             return output_frame;
         }
     //}
-
 }

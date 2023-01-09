@@ -7,5 +7,5 @@ class StompProtocol
 private:
 
 public: 
- string static parse_to_frame(string input_string);
+  std::string parse_to_frame(std::string input_string);
 };
