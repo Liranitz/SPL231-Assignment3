@@ -7,13 +7,14 @@ using std::string;
 
 #include <boost/algorithm/string.hpp>
 #include <ClientReader.h>
+StompProtocol::StompProtocol(){
+    cur_subscribe = 0;
+}
 
 std::string StompProtocol::parse_to_frame(string input_string){
-
-    //while(1){ // figure out if need to be otherway
+        map_of_subscribes["LIran"] = 5;
         std::string output_frame = "";
         std::string cur_input = input_string;
-        //getline(cin , cur_input);
         std::vector<std::string> result;
         result = boost::split(result, cur_input, boost::is_any_of(" "));
         std::string typeMessage = result[0];
@@ -25,25 +26,31 @@ std::string StompProtocol::parse_to_frame(string input_string){
 
             //try to connect the CH , res[1] ,' : ' res[1]
             //c_h.connect();
-            output_frame ="CONNECT"+'\n';
-            output_frame +="accept-version :1.2"+'\n'; // there is a " " between the 2?
-            output_frame +="host:stomp.cs.bgu.ac.il"+'\n';
-            output_frame +="login:"+result[2]+'\n';
-            output_frame +="password:"+result[3]+'\n';
-            output_frame +='\n';
-            output_frame += '\0';
+            output_frame = "CONNECT\n";
+            output_frame += "accept-vesion:1.2";
+            output_frame += "\n";
+            output_frame += "host:stomp.cs.bgu.ac.il";
+            output_frame += "\n";
+            output_frame += "login:";
+            output_frame += result[2] ;
+            output_frame += "\n";
+            output_frame += "passcode:";
+            output_frame += result[3];
+            output_frame += "\n\n\0";
         }
         else if(typeMessage == "join"){
-            ;
+            
             output_frame = "SUBSCRIBE\n"; 
             output_frame += "destination:";
             output_frame += result[1];    
             output_frame += '\n';
-            output_frame += "id:1\n";
-            //output_frame += "client's id\n";
+            output_frame += "id:";
+            output_frame += cur_subscribe;
+            output_frame += "\n";
             output_frame += "receipt:1\n";
             //output_frame += "num of rec\n"; 
             output_frame += "\n\0";
+            cur_subscribe++;
         }
         else if(typeMessage == "exit"){
             output_frame = "UNSUBSCRIBE\n"; 
