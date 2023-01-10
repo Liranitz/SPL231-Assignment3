@@ -7,12 +7,15 @@ using std::string;
 
 #include <boost/algorithm/string.hpp>
 #include <ClientReader.h>
+
 StompProtocol::StompProtocol(){
     cur_subscribe = 0;
 }
 
 std::string StompProtocol::parse_to_frame(string input_string){
-        map_of_subscribes["LIran"] = 5;
+        string lir;
+        lir = "Liran";
+        map_of_subscribes.insert({lir , 5});
         std::string output_frame = "";
         std::string cur_input = input_string;
         std::vector<std::string> result;

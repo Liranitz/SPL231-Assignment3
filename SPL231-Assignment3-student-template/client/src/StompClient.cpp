@@ -15,14 +15,14 @@ using namespace std;
 
 void input_from_keyboard(ConnectionHandler &connectionHandler){
     int numOfRec = 0;
-    StompProtocol cur_stomp = StompProtocol::StompProtocol();
+    StompProtocol cur_stomp;
     while (1) { // need to be like that?
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
 		int len=line.length();
-        string return_line = StompProtocol::parse_to_frame(line);
+        string return_line = cur_stomp.parse_to_frame(line);
         if (!connectionHandler.sendLine(return_line)) { //figure out if need to delete him
             std::cout << "Disconnected. Exiting...\n" << std::endl;
             break;
