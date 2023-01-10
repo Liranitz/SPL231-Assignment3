@@ -17,6 +17,7 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
     private ServerSocket sock;
     private ConnectionImpl<Frame> connections;
     private int  connectionsHandlerId;
+    private ClientController clientController;
 
     public BaseServer(// need to check if the clien already logged in here or in the client protocol?????????
             int port,
@@ -29,6 +30,7 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
 		this.sock = null;
         connections = new ConnectionImpl<>();
         connectionsHandlerId = 1;
+        this.clientController = new ClientController();
     }
 
     @Override
@@ -44,6 +46,7 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
                 Socket clientSock = serverSock.accept();
                 StompMessagingProtocolimplement protocol = protocolFactory.get();
                 protocol.start(connectionsHandlerId , connections);
+                protocol.initializeController(clientController);
 
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler(
                         clientSock,

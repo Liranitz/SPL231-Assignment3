@@ -3,17 +3,33 @@ package bgu.spl.net.srv.FrameForService;
 import bgu.spl.net.srv.Frame;
 
 public class Message extends Frame {
-    private String subscription;
+    private int subscriptionId;
     private Integer messageId;
     private String destination;
-    @Override
-    //public
-    public String getType() {
-        return "MESSAGE";
+    private String body ;
+
+
+    public  Message(int subId, int messId, String topic, String body){
+        this.subscriptionId = subId;
+        this.messageId = messId;
+        this.destination = topic;
+        this.body = body;
+        this.Type = "MESSAGE";
+
     }
+    @Override
+    public String getType() {
+        return this.Type;
+    }
+
 
     @Override
     public String toString() {
-        return null;
+        return "MESSAGE\n"+
+        "subscription:"+subscriptionId+ '\n' +
+        "message-id:"+messageId+ '\n' +
+        "destination:"+destination+ '\n' +
+         body + '\n' + 
+        '\u0000';
     }
 }

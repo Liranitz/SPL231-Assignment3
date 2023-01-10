@@ -11,7 +11,7 @@ public class Disconnect extends Frame {
     }
     @Override
     public String getType() {
-        return null;
+        return "DISCONNECT";
     }
 
     @Override

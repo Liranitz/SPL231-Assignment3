@@ -7,15 +7,13 @@ using std::string;
 
 #include <boost/algorithm/string.hpp>
 #include <ClientReader.h>
-
 StompProtocol::StompProtocol(){
     cur_subscribe = 0;
 }
 
 std::string StompProtocol::parse_to_frame(string input_string){
-        string lir;
-        lir = "Liran";
-        map_of_subscribes.insert({lir , 5});
+        //map_of_subscribes["LIran"] = 5;
+        
         std::string output_frame = "";
         std::string cur_input = input_string;
         std::vector<std::string> result;
@@ -42,29 +40,35 @@ std::string StompProtocol::parse_to_frame(string input_string){
             output_frame += "\n\n\0";
         }
         else if(typeMessage == "join"){
+            
             output_frame = "SUBSCRIBE\n"; 
             output_frame += "destination:";
             output_frame += result[1];    
             output_frame += '\n';
             output_frame += "id:";
-            output_frame += cur_subscribe;
+            output_frame += "0";
             output_frame += "\n";
             output_frame += "receipt:1\n";
-            //output_frame += "num of rec\n"; 
-            output_frame += "\n\0";
+            output_frame += "num of rec\n"; 
+            output_frame += "\n\n\0";
             cur_subscribe++;
         }
         else if(typeMessage == "exit"){
             output_frame = "UNSUBSCRIBE\n"; 
-            output_frame += "id:1\n";
+            output_frame += "id:0\n";
             //output_frame += "client's id\n";
             output_frame += "receipt:1\n";
             //output_frame += "num of rec\n"; 
             output_frame += "\n\0";
         }
         else if(typeMessage == "report"){
-            //read to parser funciton
-
+            output_frame = "SEND\n"; 
+            output_frame += "destination:";
+            output_frame += result[1];
+            output_frame += "\n";
+             output_frame += result[2];
+            output_frame += "\n";
+            output_frame += "\n\0";
         }
         else if(typeMessage == "summary"){
             string game_name = result[1];
@@ -74,7 +78,7 @@ std::string StompProtocol::parse_to_frame(string input_string){
         }
         else if(typeMessage == "logout"){
             output_frame = "DISCONNECT\n"; 
-            output_frame += "receipt:";
+            output_frame += "receipt:0\n";
             output_frame += "num of rec\n"; 
             output_frame += "\n\0";
         }
@@ -91,3 +95,4 @@ std::string StompProtocol::parse_to_frame(string input_string){
         }
     //}
 }
+

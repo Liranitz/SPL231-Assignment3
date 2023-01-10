@@ -61,6 +61,7 @@ vector<string> wait_for_login(){
 
 
 void read_from_socket(ConnectionHandler &connectionHandler){
+    int i=1;
     while(1){
     std::string answer;
     int len;
@@ -71,12 +72,12 @@ void read_from_socket(ConnectionHandler &connectionHandler){
             break; // wait for null charachter
         }
 		len = answer.length();
-		//
+		
         
         // A C string must end with a 0 char delimiter.  When we filled the answer buffer from the socket
 		// we filled up to the \n char - we must make sure now that a 0 char is also present. So we truncate last character.
         answer.resize(len-1);
-        //std::cout << "Reply: " << answer << " " << len << " bytes " << std::endl << std::endl;
+        std::cout << "Reply: " << answer << " " << len << " bytes " << std::endl << std::endl;
         if (answer == "bye") {
             std::cout << "Exiting...\n" << std::endl;
             break;
@@ -93,6 +94,7 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
     //    std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
     //    return -1;
     //*
+
 
     vector<string> ret;
     ret = wait_for_login();

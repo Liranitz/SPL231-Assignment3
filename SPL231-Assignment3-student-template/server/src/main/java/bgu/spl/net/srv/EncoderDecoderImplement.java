@@ -1,10 +1,12 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
+import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FramesForClient.*;
 
 import java.beans.Encoder;
 import java.nio.charset.StandardCharsets;
+import java.rmi.server.ExportException;
 import java.util.Arrays;
 
 public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
@@ -42,7 +44,6 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
 
 
-
     public Frame parseStringToFrame(String nextString) {
         System.out.println(nextString);
         if (nextString != null && nextString != "null") {
@@ -50,21 +51,28 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
             int index = 0;
             String type = frameParts[0];
 
-            if (type.equals("CONNECT"))
+            try {
+             if (type.equals("CONNECT"))
                 return new Connect(frameParts[1].split(":")[1], frameParts[2].split(":")[1], frameParts[3].split(":")[1], frameParts[4].split(":")[1]);
 
             if (type.equals("DISCONNECT"))
                 return new Disconnect(Integer.parseInt(frameParts[1].split(":")[1]));
 
             if (type.equals("SEND"))
-                return new Send(frameParts[1].split(":")[1]);
+                return new Send(frameParts[1].split(":")[1], frameParts[2]);
 
             if (type.equals("SUBSCRIBE"))
-                return new Subscribe( frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]));
+                return new Subscribe( frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]), Integer.parseInt(frameParts[3].split(":")[1]));
 
             if (type.equals("UNSUBSCRIBE"))
-                return new Unsubscribe( Integer.parseInt(frameParts[1].split(":")[1]));
+                return new Unsubscribe(Integer.parseInt(frameParts[1].split(":")[1]), Integer.parseInt(frameParts[2].split(":")[1]));
             }
+            catch(Exception exp){// צריך להרחיב על הארור??????
+                return new Error("wrong message");
+            }
+            }
+
+            
         return null; //need to return erorr??????????????
         }
 
