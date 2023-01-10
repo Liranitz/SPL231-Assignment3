@@ -15,6 +15,7 @@ using namespace std;
 
 void input_from_keyboard(ConnectionHandler &connectionHandler){
     int numOfRec = 0;
+    StompProtocol cur_stomp = StompProtocol::StompProtocol();
     while (1) { // need to be like that?
         const short bufsize = 1024;
         char buf[bufsize];

@@ -39,7 +39,6 @@ std::string StompProtocol::parse_to_frame(string input_string){
             output_frame += "\n\n\0";
         }
         else if(typeMessage == "join"){
-            
             output_frame = "SUBSCRIBE\n"; 
             output_frame += "destination:";
             output_frame += result[1];    
