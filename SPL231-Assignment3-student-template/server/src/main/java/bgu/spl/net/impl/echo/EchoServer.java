@@ -16,31 +16,38 @@ public class EchoServer {
       //  ).serve();
 
          Server.threadPerClient(
-                77, //port
+                7777, //port
                () -> new StompMessagingProtocolimplement(), //protocol factory
                EncoderDecoderImplement::new //message encoder decoder factory
         ).serve();
 
 
-        /*Supplier<StompMessagingProtocolimplement> protocolFactory,
-        Supplier<EncoderDecoderImplement> encdecFactory) {
+        // Supplier<StompMessagingProtocolimplement> protocolFactory;
+        // Supplier<EncoderDecoderImplement> encdecFactory;
+        //     this.port = port;
+        //     this.protocolFactory = protocolFactory;
+        //     this.encdecFactory = encdecFactory;
+        //     this.sock = null;
+        //     connections = new ConnectionImpl<>();
+        //     connectionsHandlerId = 1;
+        // }
+        // Server<Frame> reactor = Server.reactor(
+        //          Runtime.getRuntime().availableProcessors(),
+        //          7777, //port
+        //          () -> new StompMessagingProtocolimplement(), //protocol factory
+        //          EncoderDecoderImplement::new //message encoder decoder factory
+        //  );
+        //  reactor.serve();
 
-            this.port = port;
-            this.protocolFactory = protocolFactory;
-            this.encdecFactory = encdecFactory;
-            this.sock = null;
-            connections = new ConnectionImpl<>();
-            connectionsHandlerId = 1;*/
-
+         Server<Frame> react = new Reactor(Runtime.getRuntime().availableProcessors(),
+         7777, //port
+         () -> new StompMessagingProtocolimplement(), //protocol factory
+         EncoderDecoderImplement::new);
+        
+        react.serve();
         }
 
+}
 
 
-        // Server.reactor(
-        //         Runtime.getRuntime().availableProcessors(),
-        //         7777, //port
-        //         () -> new EchoProtocol<>(), //protocol factory
-        //         LineMessageEncoderDecoder::new //message encoder decoder factory
-        // ).serve();
-    }
 

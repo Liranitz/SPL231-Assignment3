@@ -43,6 +43,7 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
 
                 Socket clientSock = serverSock.accept();
                 StompMessagingProtocolimplement protocol = protocolFactory.get();
+                protocol.start(connectionsHandlerId , connections);
 
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler(
                         clientSock,
@@ -52,7 +53,6 @@ public abstract class BaseServer<T> implements Server<T> { // thread per client
                         connections);
                 connections.addNewConnectionHandler(connectionsHandlerId, handler); // add new connection to the connectionMap- is the id unique per trting of connection or per client???????????????
                 connectionsHandlerId++; //just for testing need to rmove note
-
                 execute(handler);
             }
         } catch (IOException ex) {

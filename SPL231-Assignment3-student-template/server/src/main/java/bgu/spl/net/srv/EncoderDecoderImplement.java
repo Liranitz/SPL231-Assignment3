@@ -44,6 +44,7 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
 
     public Frame parseStringToFrame(String nextString) {
+        System.out.println(nextString);
         if (nextString != null && nextString != "null") {
             String[] frameParts = nextString.split("\n");
             int index = 0;
@@ -55,7 +56,7 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
             if (type.equals("DISCONNECT"))
                 return new Disconnect(Integer.parseInt(frameParts[1].split(":")[1]));
 
-            if (type.equals("Send"))
+            if (type.equals("SEND"))
                 return new Send(frameParts[1].split(":")[1]);
 
             if (type.equals("SUBSCRIBE"))

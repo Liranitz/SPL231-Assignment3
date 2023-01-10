@@ -28,7 +28,7 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
             output_frame =+"login:"+result[2]+'\n';
             output_frame =+"password:"+result[3]+'\n';
             output_frame =+'\n';
-            output_frame =+'^@';
+            output_frame =+'\0';
 
         }
         else if(typeMessage == "join"){
@@ -37,14 +37,14 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
             output_frame =+"id: client's id"+'\n'; // find the id
             output_frame =+"receipt: num of rec" +'\n'; // find the num rec
             output_frame =+'\n';
-            output_frame =+'^@';
+            output_frame =+'\0';
         }
         else if(typeMessage == "exit"){
             output_frame =+"UNSUBSCRIBE"+'\n';
             output_frame =+"id: client's id"+'\n'; // find the id
             output_frame =+"receipt: num of rec" +'\n'; // find the num rec
             output_frame =+'\n';
-            output_frame =+'^@';    
+            output_frame =+'\0';
         }
         else if(typeMessage == "report"){
             //read to parser funciton
@@ -60,11 +60,12 @@ void KeyBoard_imp::input(ConnectionHandler &c_h) {
             output_frame =+"DISCONNECT"+'\n';
             output_frame =+"receipt: num of rec" +'\n'; // find the num rec
             output_frame =+'\n';
-            output_frame =+'^@';    
+            output_frame =+'\0';
         }
-        if(!output_frame._Equal("")) // or otherways
+        if(output_frame != "") // or otherways
         {
             c_h.sendLine(output_frame);
             result.clear();
         }
     }
+}

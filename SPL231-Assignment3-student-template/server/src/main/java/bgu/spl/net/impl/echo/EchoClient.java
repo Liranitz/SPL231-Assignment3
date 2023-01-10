@@ -15,7 +15,7 @@ public class EchoClient {
         char ch = '\0';
         if (args.length == 0) {
             args = new String[3];
-            args[0] = "localhost";
+            args[0] = "127.0.0.1";
 
             /*args[1] = "UNSUBSCRIBE\n" +
                     "id :1\n" +
@@ -60,7 +60,7 @@ public class EchoClient {
 
         //BufferedReader and BufferedWriter automatically using UTF-8 encoding
         int count =0;
-        try (Socket sock = new Socket(args[0], 77);
+        try (Socket sock = new Socket(args[0], 7777);
              BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
              BufferedWriter out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()))) {
         while (true && count<10){

@@ -61,6 +61,7 @@
         "utility": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
+<<<<<<< HEAD
         "xstring": "cpp",
         "*.ipp": "cpp",
         "csetjmp": "cpp",
@@ -111,6 +112,14 @@
         "xtr1common": "cpp",
         "xtree": "cpp",
         "xutility": "cpp"
+=======
+        "algorithm": "cpp",
+        "filesystem": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "cinttypes": "cpp",
+        "*.ipp": "cpp"
+>>>>>>> 522010ce136312c3a00f400483007288067c3a9e
     },
     "makefile.makefilePath": "client/"
 }
