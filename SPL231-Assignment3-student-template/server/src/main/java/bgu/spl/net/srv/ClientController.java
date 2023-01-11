@@ -8,22 +8,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientController {
-    protected static ConcurrentHashMap<String, Client> clientsByName = new ConcurrentHashMap<>(); // key=loginName of
+    protected  ConcurrentHashMap<String, Client> clientsByName; // key=loginName of
                                                                                                   // the client, value=
                                                                                                   // clients- is it
                                                                                                   // nessecery?????
-    protected static ConcurrentHashMap<Integer, Client> clientsByConnectionHandlerId = new ConcurrentHashMap<>(); // key=connectionHandlerId,
+    protected ConcurrentHashMap<Integer, Client> clientsByConnectionHandlerId; // key=connectionHandlerId,
                                                                                                                   // value=
                                                                                                                   // clients
-    protected static ConcurrentHashMap<String, ConcurrentHashMap<Integer, Client>> topics = new ConcurrentHashMap<>();// key=topics,
+    protected  ConcurrentHashMap<String, ConcurrentHashMap<Integer, Integer>> topics;// key=topics,
                                                                                                                       // value=
                                                                                                                       // map
                                                                                                                       // of
                                                                                                                       // Client
                                                                                                                       // (key=connectionHandlerId,
                                                                                                                       // value=
-                                                                                                                      // client
-    protected static ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, String>> subscribeIdByconnectionsHandlerId = new ConcurrentHashMap<>(); // key=connectionHandlerId,
+                                                                                                                      // subscriptionId
+    protected  ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, String>> subscribeIdByconnectionsHandlerId; // key=connectionHandlerId,
                                                                                                                                                    // value=
                                                                                                                                                    // map
                                                                                                                                                    // of
@@ -37,7 +37,14 @@ public class ClientController {
                                                                                                                                                    // topic
                                                                                                                                                    // which
                                                                                                                                                    // subscribed
-    protected static ConcurrentHashMap<String, String> userAndPassword = new ConcurrentHashMap<>(); // need to add evert
+    protected  ConcurrentHashMap<String, String> userAndPassword; // need to add evert
                                                                                                     // client that
                                                                                                     // conncted already
+
+public  ClientController (){
+    this.clientsByConnectionHandlerId = new ConcurrentHashMap<>();
+    this.clientsByName = new ConcurrentHashMap<>();
+    this.subscribeIdByconnectionsHandlerId = new ConcurrentHashMap<>();
+    this.topics = new ConcurrentHashMap<>();
+}
 }
