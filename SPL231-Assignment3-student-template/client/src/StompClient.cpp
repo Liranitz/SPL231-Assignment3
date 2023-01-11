@@ -85,9 +85,7 @@ vector<string> wait_for_login(){
         // string output_frame = "";
         // string cur_input= "";
         // getline(cin , cur_input);
-        string output_frame = "";
-        string cur_input= "";
-        getline(cin , cur_input);
+
         //mock of login
         string cur_input = "login 127.0.0.1:7777 lidan 123456";
 
