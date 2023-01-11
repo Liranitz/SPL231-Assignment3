@@ -172,6 +172,7 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
     outer_frame += "passcode:";
     outer_frame += pass;
     outer_frame += "\n\n\0";
+    //outer_frame = StompProtocol::parse_to_frame()
     //cur_client.actions_by_receipt[cur_client.receipts_counter] = "CONNECT SERVER";
     cur_client.receipts_counter = cur_client.receipts_counter + 1;
     //outer_frame += "\n";

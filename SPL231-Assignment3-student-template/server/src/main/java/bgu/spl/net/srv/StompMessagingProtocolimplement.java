@@ -1,83 +1,70 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.*;
-import bgu.spl.net.impl.echo.LineMessageEncoderDecoder;
-import bgu.spl.net.srv.Frame;
+
 import bgu.spl.net.srv.FrameForService.Connected;
 import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FrameForService.Message;
 import bgu.spl.net.srv.FrameForService.Reciept;
 import bgu.spl.net.srv.FramesForClient.*;
-
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame> {
     private ConnectionImpl<Frame> connectionsImpl;
     // curId - connection handler ID
     private int connectionHandlerId;
-    private String[] curArrayMessage;
     private ClientController clientController;
     private int messageId;
-    
 
-    public void start(int connectionId, Connections connections) {
-        this.connectionsImpl = (ConnectionImpl) connections;
+    public void start(int connectionId, Connections<Frame> connections) {
+        this.connectionsImpl = (ConnectionImpl<Frame>) connections;
         this.connectionHandlerId = connectionId;
-        curArrayMessage = null;
-        this.messageId = 1;      
+        this.messageId = 1;
     }
 
     public void initializeController(ClientController clientController) {
         this.clientController = clientController;
     }
 
-
-
     @Override
     public void process(Frame message) {
         Frame ret = null;
-        int i=1;
         String type = message.getType();
         // ClientController.counterReciep++;
         switch (type) {
             case "CONNECT":
                 Connect curFrame = (Connect) message;
-                Client cl = clientController.clientsByName.get(curFrame.getName());
+                String loggInName = curFrame.getName();
+                Client client = clientController.clientsByName.get(loggInName);
                 if (clientController.clientsByConnectionHandlerId.containsKey(connectionHandlerId)) {// already have a user
                     Error eror = new Error("already have a user for this client");
                     ret = eror;
-                }
-
-                else if (cl == null) {// new user- need to registr him
-                    Client newClient = new Client(curFrame.getName(), curFrame.getPassword()); // new user want to
-                                                                                               // register
-                    clientController.clientsByName.put(curFrame.getName(), newClient);
+                } else if (client == null) {// new user- need to registr him
+                    Client newClient = new Client(loggInName, curFrame.getPassword()); // new user want to register
+                    clientController.clientsByName.put(loggInName, newClient);
                     clientController.clientsByConnectionHandlerId.put(connectionHandlerId, newClient);
                     ret = new Connected();
                 }
 
                 else {// the client already exist
-                    if (!curFrame.getPassword().equals(cl.getPassword())) // check if the password is correct
+                    if (!curFrame.getPassword().equals(client.getPassword())) // check if the password is correct
                         ret = new Error("Wrong password");// wrong passowrd
-                    else if (cl.isConnected())// check if already connected
-                        ret = new Error("User already logged in");// alredy logged in
-                    else {// login
-                        cl.setStat(true);
+                    else if (client.isConnected())// check if already connected
+                        ret = new Error("User already logged in-(from another socket)");// allready logged in
+                    else {// login and add his new connection handler to the map
+                        client.setLogIn(true);
+                        clientController.clientsByConnectionHandlerId.put(connectionHandlerId, client);
                         ret = new Connected();
                     }
                 }
                 break;
 
-                
-
             case "UNSUBSCRIBE":
                 Unsubscribe unsSub = (Unsubscribe) message;
                 try {
                     int unSubId = unsSub.getSubId();
-                    String unSubTopic = clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId)
-                            .get(unSubId);
+                    String unSubTopic = clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId).get(unSubId);
                     clientController.topics.get(unSubTopic).remove(connectionHandlerId); // remove from the specific
                                                                                          // channel map
                     clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId).remove(unSubId);// remove
@@ -90,8 +77,7 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 }
                 break;
             case "SUBSCRIBE":
-                // A client try to subscribe to a topic , if the topic doesn't exist, create
-                // one.
+                // A client try to subscribe to a topic , if the topic doesn't exist, create one.
                 Subscribe sub = (Subscribe) message;
                 int subId = sub.getsubId();
                 int recId = sub.getrecId();
@@ -128,52 +114,50 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 break;
 
             case "SEND": // gets a send frame from a client
-                   Send sendMessage = (Send) message;
-                    String topic = sendMessage.getDestination();
-                    String body = sendMessage.getBody();
-                   ConcurrentHashMap<Integer, Integer> clientsOfTopic = clientController.topics.get(topic);
-                //check that the client has subscribes to this topic
-                if (!(clientsOfTopic.containsKey(connectionHandlerId))){
+                Send sendMessage = (Send) message;
+                String topic = sendMessage.getDestination();
+                String body = sendMessage.getBody();
+                ConcurrentHashMap<Integer, Integer> clientsOfTopic = clientController.topics.get(topic);
+                // check that the client has subscribes to this topic
+                if (!(clientsOfTopic.containsKey(connectionHandlerId))) {
                     ret = new Error("please subscribe to this topic before you sendin a message");
                 }
 
-                else{
-                     //and now send message to everyone who subscribed this topic
+                else {
+                    // and now send message to everyone who subscribed this topic
                     for (Integer handlerId : clientsOfTopic.keySet()) {
-                        Message messageToSend = new Message( clientsOfTopic.get(handlerId), this.messageId, topic, body);
+                        Message messageToSend = new Message(clientsOfTopic.get(handlerId), this.messageId, topic, body);
                         connectionsImpl.send(handlerId, messageToSend);
                     }
                     messageId++;
                     // String curTopic = mes.getDestinatio();
                     // int messageReceipt = new int..
-                }                
+                }
                 break;
 
             case "DISCONNECT": // need to remove from all topics
                 Disconnect disconnectMessage = (Disconnect) message;
-                ConcurrentHashMap<Integer, String> subscriptions = clientController.subscribeIdByconnectionsHandlerId
-                        .get(connectionHandlerId);
-                for (ConcurrentHashMap<Integer, Integer> topicMap : clientController.topics.values()) { // remove the
-                                                                                                       // user from each
-                                                                                                       // topic he
-                                                                                                       // belongs.
+                ConcurrentHashMap<Integer, String> subscriptions = clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId);
+                for (ConcurrentHashMap<Integer, Integer> topicMap : clientController.topics.values()) { // remove the user from each topic he belongs.
                     try {
                         topicMap.remove(connectionHandlerId);
                     } catch (NullPointerException exception) {
                         // not found in the list
                     }
                 }
-                clientController.subscribeIdByconnectionsHandlerId.remove(connectionHandlerId); // remove from the
-                                                                                                // subscription list
+                clientController.subscribeIdByconnectionsHandlerId.remove(connectionHandlerId); // remove from the subscription list
+                clientController.clientsByConnectionHandlerId.get(connectionHandlerId).setLogIn(false); // set his status not connected
+                clientController.clientsByConnectionHandlerId.remove(connectionHandlerId);// remove from the list of the connection handler id
+                
                 Reciept rec = new Reciept(disconnectMessage.getId());
                 ret = rec;
                 break;
 
         }
-        if (ret != null){
+        if (ret != null) {
             connectionsImpl.send(connectionHandlerId, ret);
         }
-        
+
     }
 
     private void messageToObject(String message) {
