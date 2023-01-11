@@ -2,7 +2,7 @@
 
 #include <string>
 #include <iostream>
-
+#include "ClientData.h"
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp; 
@@ -15,9 +15,12 @@ private:
 	tcp::socket socket_;
 
 public:
-	ConnectionHandler(std::string host, short port);
-
-	virtual ~ConnectionHandler();
+	ConnectionHandler(std::string host, short port , ClientData *curClient);
+	ClientData &cur_client_data();
+	~ConnectionHandler();
+	ClientData *cur_client;
+	ConnectionHandler(const ConnectionHandler &other);
+	ConnectionHandler &operator=(const ConnectionHandler &other);
 
 	// Connect to the remote machine
 	bool connect();

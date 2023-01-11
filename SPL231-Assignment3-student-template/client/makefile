@@ -6,8 +6,8 @@ all: StompWCIClient
 EchoClient: bin/ConnectionHandler.o bin/echoClient.o
 	g++ -o bin/EchoClient bin/ConnectionHandler.o bin/echoClient.o $(LDFLAGS)
 
-StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o
-	g++ -o bin/StompWCIClient bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o  $(LDFLAGS)
+StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o bin/ClientData.o
+	g++ -o bin/StompWCIClient bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o  bin/ClientData.o $(LDFLAGS)
 
 bin/ConnectionHandler.o: src/ConnectionHandler.cpp
 	g++ $(CFLAGS) -o bin/ConnectionHandler.o src/ConnectionHandler.cpp
@@ -29,6 +29,9 @@ bin/KeyBoard_imp.o: src/KeyBoard_imp.cpp
 
 bin/ClientReader.o: src/ClientReader.cpp
 	g++ $(CFLAGS) -o bin/ClientReader.o src/ClientReader.cpp
+
+bin/ClientData.o: src/ClientData.cpp
+	g++ $(CFLAGS) -o bin/ClientData.o src/ClientData.cpp
 
 .PHONY: clean
 clean:

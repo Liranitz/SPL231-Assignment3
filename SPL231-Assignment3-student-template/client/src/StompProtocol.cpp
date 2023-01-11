@@ -2,20 +2,20 @@
 #include <stdlib.h>
 #include "ConnectionHandler.h"
 #include "../include/KeyBoard_imp.h"
+
 using namespace boost;
 using std::string;
 
 #include <boost/algorithm/string.hpp>
 #include <ClientReader.h>
 
-StompProtocol::StompProtocol(){
-    cur_subscribe = 0;
-}
 
-std::string StompProtocol::parse_to_frame(string input_string){
-        string lir;
-        lir = "Liran";
-        map_of_subscribes.insert({lir , 5});
+
+// gets an input of the client's data
+std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandler& connectionHandler){
+        //ClientData cur_ch_client = connectionHandler.cur_client;
+        //  lir = "Liran";
+        //  map_of_subscribes.insert({lir , 5});
         std::string output_frame = "";
         std::string cur_input = input_string;
         std::vector<std::string> result;
@@ -42,25 +42,39 @@ std::string StompProtocol::parse_to_frame(string input_string){
             output_frame += "\n\n\0";
         }
         else if(typeMessage == "join"){
+            int curSubIndex = connectionHandler.cur_client_data().subscribe_counter;
+            string curSubIndexStr = "" + curSubIndex;
+            int curRecIndex = connectionHandler.cur_client_data().receipts_counter;
+            string curRecIndexStr = "" + curRecIndex;
             output_frame = "SUBSCRIBE\n"; 
             output_frame += "destination:";
             output_frame += result[1];    
             output_frame += '\n';
             output_frame += "id:";
-            output_frame += cur_subscribe;
+            output_frame += curSubIndexStr;
             output_frame += "\n";
-            output_frame += "receipt:1\n";
-            //output_frame += "num of rec\n"; 
-            output_frame += "\n\0";
-            cur_subscribe++;
+            output_frame += "receipt:";
+            output_frame += curRecIndexStr;
+            output_frame += "\n";
+            output_frame += "\n";
+            output_frame += "\0";
+
+            connectionHandler.cur_client_data().subscribe_counter = connectionHandler.cur_client_data().subscribe_counter + 1;
+            connectionHandler.cur_client_data().receipts_counter = connectionHandler.cur_client_data().receipts_counter + 1;
+            //cur_subscribe++;  
         }
         else if(typeMessage == "exit"){
+            int getSubIndexByTopic = connectionHandler.cur_client_data().topic_to_id_map[result[1]];
+            int curRecIndex = connectionHandler.cur_client_data().receipts_counter;
             output_frame = "UNSUBSCRIBE\n"; 
-            output_frame += "id:1\n";
-            //output_frame += "client's id\n";
-            output_frame += "receipt:1\n";
-            //output_frame += "num of rec\n"; 
+            output_frame += "id:";
+            output_frame += getSubIndexByTopic;
+            output_frame += "\n";
+            output_frame += "receipt:";
+            output_frame += curRecIndex;
+            output_frame += "\n"; 
             output_frame += "\n\0";
+            connectionHandler.cur_client_data().receipts_counter = connectionHandler.cur_client_data().receipts_counter + 1;
         }
         else if(typeMessage == "report"){
             //read to parser funciton
@@ -75,7 +89,7 @@ std::string StompProtocol::parse_to_frame(string input_string){
         else if(typeMessage == "logout"){
             output_frame = "DISCONNECT\n"; 
             output_frame += "receipt:";
-            output_frame += "num of rec\n"; 
+            output_frame += "1\n"; 
             output_frame += "\n\0";
         }
         
@@ -89,5 +103,5 @@ std::string StompProtocol::parse_to_frame(string input_string){
             ret_out =  "ERROR\ninvalid syntax";
             return ret_out;
         }
-    //}
-}
+    }
+

@@ -22,7 +22,7 @@ public class Subscribe extends Frame {
 
     @Override
     public String toString() {
-        return null;
+        return "HELLO LIRAN \0";
     }
 
 }

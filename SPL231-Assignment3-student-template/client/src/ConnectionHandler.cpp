@@ -9,12 +9,23 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-ConnectionHandler::ConnectionHandler(string host, short port) : host_(host), port_(port), io_service_(),
-                                                                socket_(io_service_) {}
+ConnectionHandler::ConnectionHandler(string host, short port, ClientData *cur_client_from) : host_(host), port_(port), io_service_(),
+                                                                socket_(io_service_) , cur_client(cur_client_from) {}
 
 ConnectionHandler::~ConnectionHandler() {
 	close();
 }
+
+//copy const
+ConnectionHandler::ConnectionHandler(const ConnectionHandler &other)
+        : host_(), port_(), io_service_(), socket_(io_service_), cur_client(){}
+
+ConnectionHandler &ConnectionHandler::operator=(const ConnectionHandler &other) { return *this; }
+
+
+ ClientData &ConnectionHandler::cur_client_data() {
+     return *cur_client;
+ }
 
 bool ConnectionHandler::connect() {
 	std::cout << "Starting connect to "
@@ -66,11 +77,11 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
 
 bool ConnectionHandler::getLine(std::string &line) {
-	return getFrameAscii(line, '\0');
+	return getFrameAscii(line, '\n');
 }
 
 bool ConnectionHandler::sendLine(std::string &line) {
-	return sendFrameAscii(line, '\0');
+	return sendFrameAscii(line, '\n');
 }
 
 // bool ConnectionHandler::getLine(std::string &line) {
