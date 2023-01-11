@@ -17,10 +17,12 @@ private:
 public:
 	ConnectionHandler(std::string host, short port , ClientData *curClient);
 	ClientData &cur_client_data();
+	bool is_logged_in;
 	~ConnectionHandler();
 	ClientData *cur_client;
 	ConnectionHandler(const ConnectionHandler &other);
 	ConnectionHandler &operator=(const ConnectionHandler &other);
+	
 
 	// Connect to the remote machine
 	bool connect();

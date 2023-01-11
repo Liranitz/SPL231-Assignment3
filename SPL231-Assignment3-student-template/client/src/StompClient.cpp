@@ -12,6 +12,47 @@ using namespace std;
 #include "StompProtocol.h"
 #include <thread>
 
+void parse_to_action(ConnectionHandler &connectionHandler , string message){
+        std::string output_frame = "";
+        std::string cur_input = message;
+        std::vector<std::string> result_message;
+        result_message = boost::split(result_message, cur_input, boost::is_any_of("\n"));
+        std::string typeAct = result_message[1];
+        //here there is a \n before the string
+        if(typeAct == "RECIEPT"){
+            std::vector<std::string> result_action;
+            result_action = boost::split(result_action, result_message[2], boost::is_any_of(":"));
+            string id_of_action = result_action[1];
+            int num = stoi(id_of_action);
+            string act;
+            act = connectionHandler.cur_client_data().actions_by_receipt[num];
+            std::vector<std::string> result_do;
+            result_do = boost::split(result_do, act, boost::is_any_of(" "));
+            std::string type_do = result_do[0];
+            if(type_do == "ADD"){
+                //params :
+                // result_do[0] = add , result_do[1] = stringOfTopic , result_do[2] = ID_ofSub
+                connectionHandler.cur_client_data().topic_to_id_map[result_do[1]] = stoi(result_do[2]);
+            }
+            else if (type_do == "REMOVE"){
+                connectionHandler.cur_client_data().topic_to_id_map.erase(result_do[1]);
+            }
+            // else if(type_do == "CONNECT"){
+            //     connectionHandler.is_logged_in = true;
+            // }
+            else if(type_do == "CLOSE"){
+                //need to close only the socket?
+                connectionHandler.close();
+            }
+
+        
+            //find out which act it is and do it.
+        }
+        //attenation - here it is at the first place
+        if (result_message[0] == "CONNECTED"){
+            connectionHandler.is_logged_in = true;
+        }
+    }
 
 void input_from_keyboard(ConnectionHandler &connectionHandler){
     //ClientData cur_ch_client = connectionHandler.();
@@ -64,7 +105,7 @@ vector<string> wait_for_login(){
 void read_from_socket(ConnectionHandler &connectionHandler){
     while(1){
     std::string answer;
-    int len;
+    //int len;
         // Get back an answer: by using the expected number of bytes (len bytes + newline delimiter)
         // We could also use: connectionHandler.getline(answer) and then get the answer without the newline char at the end
         if(!connectionHandler.getLine(answer)) { //
@@ -72,11 +113,12 @@ void read_from_socket(ConnectionHandler &connectionHandler){
             std::cout << "Disconnected. Exiting...\n" << std::endl;
             break; // wait for null charachter
         }
-		len = answer.length();
+		//len = answer.length();
 		//
         // A C string must end with a 0 char delimiter.  When we filled the answer buffer from the socket
 		// we filled up to the \n char - we must make sure now that a 0 char is also present. So we truncate last character.
-        answer.resize(len-1);
+        //answer.resize(len-1);
+        parse_to_action(connectionHandler , answer);
         std::cout << answer << std::endl;
         if (answer == "bye") {
             std::cout << "Exiting...\n" << std::endl;
@@ -84,6 +126,7 @@ void read_from_socket(ConnectionHandler &connectionHandler){
         }
     }
 }
+
 
 /**
  * 
@@ -107,7 +150,9 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
     string pass;
     pass = ret[3]; 
     string outer_frame;
-    //  login 127.0.0.1:7777 lirdan 123456
+    //  join Germany_Japan
+    //  login 127.0.0.1:7777 lidan 123456
+    //  report /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/events1.json
     ClientData cur_client = ClientData(name ,pass);
     ConnectionHandler connectionHandler(host,port, &cur_client); // figure out how
     //KeyBoard_imp keybor(connectionHandler);
@@ -116,7 +161,6 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
         return 1;
         // figure out how to get back to the function
     }
-    
     outer_frame = "CONNECT\n";
     outer_frame += "accept-vesion:1.2";
     outer_frame += "\n";
@@ -128,14 +172,14 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
     outer_frame += "passcode:";
     outer_frame += pass;
     outer_frame += "\n\n\0";
-
+    //cur_client.actions_by_receipt[cur_client.receipts_counter] = "CONNECT SERVER";
+    cur_client.receipts_counter = cur_client.receipts_counter + 1;
     //outer_frame += "\n";
 
     //string send_line = '\0';
 
     connectionHandler.sendLine(outer_frame);
 
-    //connectionHandler.sendBytes("\0" , 1);
     std::thread read_input_thread(&input_from_keyboard ,  std::ref(connectionHandler));
     std::thread read_socket_thread(&read_from_socket , std::ref(connectionHandler));
     read_input_thread.join();

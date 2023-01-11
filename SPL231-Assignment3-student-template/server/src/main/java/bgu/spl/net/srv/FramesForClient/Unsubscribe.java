@@ -23,7 +23,7 @@ public class Unsubscribe extends Frame {
 
     @Override
     public String getType() {
-        return type;;
+        return Type;
     }
 
     @Override

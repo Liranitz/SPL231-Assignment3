@@ -6,7 +6,7 @@ import bgu.spl.net.srv.Frame;
 import bgu.spl.net.srv.FrameForService.Connected;
 import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FrameForService.Message;
-import bgu.spl.net.srv.FrameForService.Receipt;
+import bgu.spl.net.srv.FrameForService.Reciept;
 import bgu.spl.net.srv.FramesForClient.*;
 
 import java.util.ArrayList;
@@ -81,14 +81,7 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     clientController.topics.get(unSubTopic).remove(connectionHandlerId); // remove from the specific
                                                                                          // channel map
                     clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId).remove(unSubId);// remove
-                                                                                                                // from
-                                                                                                                // the
-                                                                                                                // map
-                                                                                                                // subscripion
-                                                                                                                // of
-                                                                                                                // the
-                                                                                                                // client
-                    Receipt rec = new Receipt(unsSub.getRecId());
+                    Reciept rec = new Reciept(unsSub.getRecId());
                     ret = rec;
                 } catch (Exception ex) {
                     Error eror = new Error("You did not subscribe to that destination");// nee more detailed
@@ -131,7 +124,7 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     subscriptions.put(subId, curTopic);
                     clientController.subscribeIdByconnectionsHandlerId.put(connectionHandlerId, subscriptions);
                 }
-                ret = new Receipt(recId);
+                ret = new Reciept(recId);
                 break;
 
             case "SEND": // gets a send frame from a client
@@ -172,7 +165,7 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 }
                 clientController.subscribeIdByconnectionsHandlerId.remove(connectionHandlerId); // remove from the
                                                                                                 // subscription list
-                Receipt rec = new Receipt(disconnectMessage.getId());
+                Reciept rec = new Reciept(disconnectMessage.getId());
                 ret = rec;
                 break;
 
