@@ -57,21 +57,18 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
 void input_from_keyboard(ConnectionHandler &connectionHandler){
     //ClientData cur_ch_client = connectionHandler.();
     //cout << cur_ch_client.get_name();
-    //int numOfRec = 0;
+    //int numOfRec = 0;    
     while (1) { // need to be like that?
+
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
-		//int len=line.length();
         string return_line = StompProtocol::parse_to_frame(line , connectionHandler );
         if (!connectionHandler.sendLine(return_line)) { //figure out if need to delete him
             std::cout << "Disconnected. Exiting...\n" << std::endl;
             break;
         }
-        //connectionHandler.sendBytes("\0" , 1);
-
-        //std::cout << "Sent " << len+1 << " bytes to server" << std::endl; // need it?
     }
 }
 
@@ -85,9 +82,15 @@ vector<string> wait_for_login(){
         // string output = "";
         // boost::split(strs, line, boost::is_any_of(" "));
 
+        // string output_frame = "";
+        // string cur_input= "";
+        // getline(cin , cur_input);
         string output_frame = "";
         string cur_input= "";
         getline(cin , cur_input);
+        //mock of login
+        string cur_input = "login 127.0.0.1:7777 lidan 123456";
+
         vector<string> result;
         result = boost::split(result, cur_input, boost::is_any_of(" "));
         string typeMessage = result[0];
@@ -109,7 +112,7 @@ void read_from_socket(ConnectionHandler &connectionHandler){
         // Get back an answer: by using the expected number of bytes (len bytes + newline delimiter)
         // We could also use: connectionHandler.getline(answer) and then get the answer without the newline char at the end
         if(!connectionHandler.getLine(answer)) { //
-            std::cout << answer << std::endl;
+            //std::cout << answer << std::endl;
             std::cout << "Disconnected. Exiting...\n" << std::endl;
             break; // wait for null charachter
         }
@@ -137,7 +140,6 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
     //    std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
     //    return -1;
     //*
-
     vector<string> ret;
     ret = wait_for_login();
     vector<string> ports;

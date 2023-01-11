@@ -3,6 +3,7 @@
 #include "ConnectionHandler.h"
 #include "../include/KeyBoard_imp.h"
 #include "../include/event.h"
+#include <sstream>
 
 using namespace boost;
 using std::string;
@@ -14,8 +15,62 @@ void StompProtocol::send_messages_by_event(string path_message ,ConnectionHandle
     names_and_events cur_events;
     cur_events = parseEventsFile(path_message);
     string direction = cur_events.team_a_name + "_" + cur_events.team_b_name;
+    string cur_name = connectionHandler.cur_client_data().get_name();
     for(Event e : cur_events.events){
-        //
+        string output_frame = "";
+        output_frame = "SEND\n";
+        output_frame += "destination:/";
+        output_frame += direction;
+        output_frame += "\n";
+        output_frame += "\n";
+        output_frame += "user:";
+        output_frame += cur_name;
+        output_frame += "\n";
+        output_frame += "team a:";
+        output_frame += cur_events.team_a_name;
+        output_frame += "\n";
+        output_frame += "team b:";
+        output_frame += cur_events.team_b_name;
+        output_frame += "\n";
+        output_frame += "time:";
+        output_frame += std::to_string(e.get_time());
+        output_frame += "\n";
+        
+        // std::stringstream output_frame;
+        // output_frame << "SEND\n";
+        // output_frame << "destination:/" << direction << "\n\n";
+        // output_frame << "user:" << cur_name << "\n";
+        // output_frame << "team a:" << cur_events.team_a_name << "\n";
+        // output_frame << "team b:" << cur_events.team_b_name << "\n";
+        // output_frame << "time:" << e.get_time() << "\n";
+        // std::string output_string = output_frame.str();
+
+        // dont need to take in consideration???
+        // output_frame += "general game updates:";
+        // output_frame += std::to_string(e.get_time());
+        // output_frame += "\n";
+        // keep add stuff
+        output_frame += "team a updates:";
+        for (auto const& x : e.get_team_a_updates())
+            {
+                string cur_desc = "   " + x.first + ":" + x.second + "\n";
+                output_frame += cur_desc;
+            }        
+            output_frame += "\n";
+        
+        output_frame += "team b updates:";
+        for (auto const& x : e.get_team_b_updates())
+            {
+                string cur_desc = "   " + x.first + ":" + x.second + "\n";
+                output_frame += cur_desc;
+            }
+        output_frame += "\n";
+        output_frame += "description:";
+        output_frame += e.get_discription();
+        output_frame += "\n";
+        output_frame += "\0";
+        connectionHandler.sendLine(output_frame);
+        //send to ...
     }
 }
 
@@ -137,7 +192,7 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
                 // output_frame += "\n";
                 // output_frame += result[2];
                 // output_frame += "\n";
-                // output_frame += "\n\0";
+                output_frame += "\n\0";
                 }
             catch(...){
                 cout << "User is not subscribed to that topic";
