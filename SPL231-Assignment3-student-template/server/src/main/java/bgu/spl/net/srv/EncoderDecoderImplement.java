@@ -58,8 +58,15 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
             if (type.equals("DISCONNECT"))
                 return new Disconnect(Integer.parseInt(frameParts[1].split(":")[1]));
 
-            if (type.equals("SEND"))
-                return new Send(frameParts[1].split(":")[1], frameParts[2]);
+            if (type.equals("SEND")){
+                String destination = frameParts[1].split(":")[1];
+                int startIndexOfBody = nextString.indexOf("\n", nextString.indexOf("\n") + 1) + 1;
+                String body = nextString.substring(startIndexOfBody);
+                return new Send(destination, body);
+                
+               
+            }
+                
 
             if (type.equals("SUBSCRIBE"))
                 return new Subscribe( frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]), Integer.parseInt(frameParts[3].split(":")[1]));
