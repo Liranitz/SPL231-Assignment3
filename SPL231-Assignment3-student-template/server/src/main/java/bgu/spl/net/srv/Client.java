@@ -8,7 +8,6 @@ public class Client {
     private String name;
     private String password;
     private List<String> gamesSubscribedTo;
-    //private HashMap<Integer , String>;
     private boolean logged_in;
 
     public Client(String name , String password){
@@ -20,13 +19,17 @@ public class Client {
     public String getName(){
         return name;
     }
+
+    public boolean isLogged_in(){
+        return logged_in;
+    }
     public String getPassword(){
         return password;
     }
     public boolean isConnected(){
         return logged_in;
     }
-    public void setStat(boolean newLogOrNot){
+    public void setLogIn(boolean newLogOrNot){
         logged_in = newLogOrNot;
     }
     public List<String> getGamesSubscribedTo(){
