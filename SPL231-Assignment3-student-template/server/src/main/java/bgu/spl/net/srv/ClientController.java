@@ -24,19 +24,19 @@ public class ClientController {
                                                                                                                       // value=
                                                                                                                       // subscriptionId
     protected  ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, String>> subscribeIdByconnectionsHandlerId; // key=connectionHandlerId,
-                                                                                                                                                   // value=
-                                                                                                                                                   // map
-                                                                                                                                                   // of
-                                                                                                                                                   // subscription
-                                                                                                                                                   // unique
-                                                                                                                                                   // to
-                                                                                                                                                   // the
-                                                                                                                                                   // connectionhnadleId(key=subscribeId
-                                                                                                                                                   // value=
-                                                                                                                                                   // the
-                                                                                                                                                   // topic
-                                                                                                                                                   // which
-                                                                                                                                                   // subscribed
+                                                                                                                                                //    value=
+                                                                                                                                                //    map
+                                                                                                                                                //    of
+                                                                                                                                                //    subscription
+                                                                                                                                                //    unique
+                                                                                                                                                //    to
+                                                                                                                                                //    the
+                                                                                                                                                //    connectionhnadleId(key=subscribeId
+                                                                                                                                                //    value=
+                                                                                                                                                //    the
+                                                                                                                                                //    topic
+                                                                                                                                                //    which
+                                                                                                                                                //    subscribed
     protected  ConcurrentHashMap<String, String> userAndPassword; // need to add evert
                                                                                                     // client that
                                                                                                     // conncted already
