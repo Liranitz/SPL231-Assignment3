@@ -19,7 +19,7 @@ void StompProtocol::send_messages_by_event(string path_message ,ConnectionHandle
     for(Event e : cur_events.events){
         string output_frame = "";
         output_frame = "SEND\n";
-        output_frame += "destination:/";
+        output_frame += "destination:";
         output_frame += direction;
         output_frame += "\n";
         output_frame += "\n";

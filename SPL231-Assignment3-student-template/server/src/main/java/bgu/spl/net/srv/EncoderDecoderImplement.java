@@ -86,13 +86,13 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
             @Override
             public byte[] encode (Frame message){
-                return (message.toString() + "\n").getBytes();
+                return (message.toString()).getBytes();
             }
 
     public byte[] encode (String message){
         byte[] a = message.toString().getBytes();
         byte[] b = (message.toString() + "\n").getBytes();
-        return (message.toString() + "\n").getBytes();
+        return (message.toString() + "\0").getBytes();
     }
 
         }
