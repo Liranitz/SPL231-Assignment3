@@ -109,7 +109,15 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
             // socket error, cannoot
             //try to connect the CH , res[1] ,' : ' res[1]
             //c_h.connect();
-
+            string name;
+            string passcode;
+            try{
+                name = result[2];
+                passcode = result[3];
+            }
+            catch(...){
+                cout << "Please insert valid name and password";
+            }
             output_frame << "CONNECT\n";
             output_frame << "accept-vesion:1.2\n";
             output_frame << "host:stomp.cs.bgu.ac.il\n";
