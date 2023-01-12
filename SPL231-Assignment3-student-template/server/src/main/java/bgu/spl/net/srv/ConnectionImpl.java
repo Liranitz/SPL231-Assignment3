@@ -3,18 +3,20 @@ package bgu.spl.net.srv;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionImpl<T> implements Connections<T>{
-    private ConcurrentHashMap<Integer , ConnectionHandler> connection_Map; // conne
+    private ConcurrentHashMap<Integer , ConnectionHandler<T>> connection_Map; // conne
+    protected ClientController clientController;
 
     public ConnectionImpl(){
         this.connection_Map = new ConcurrentHashMap<>();
+        clientController = new ClientController();
     }
 
 
     @Override
     public boolean send(int connectionId, T msg) { // connect function
-        ConnectionHandler temp = connection_Map.get(connectionId);
+        ConnectionHandler<T> temp = connection_Map.get(connectionId);
         if (temp != null) {
-            temp.send(msg.toString());
+            temp.send(msg);
             return true;
         }
         else {
@@ -32,7 +34,7 @@ public class ConnectionImpl<T> implements Connections<T>{
 
     }
 
-    public void addNewConnectionHandler(int key, ConnectionHandler handler) {
+    public void addNewConnectionHandler(int key, ConnectionHandler<T> handler) {
         connection_Map.putIfAbsent(key, handler);
     }
 }

@@ -11,20 +11,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame> {
     private ConnectionImpl<Frame> connectionsImpl;
-    // curId - connection handler ID
     private int connectionHandlerId;
     private ClientController clientController;
     private int messageId;
+  
+   
 
     public void start(int connectionId, Connections<Frame> connections) {
         this.connectionsImpl = (ConnectionImpl<Frame>) connections;
         this.connectionHandlerId = connectionId;
-        this.messageId = 1;
+        this.clientController = this.connectionsImpl.clientController;      
     }
 
-    public void initializeController(ClientController clientController) {
-        this.clientController = clientController;
-    }
 
     @Override
     public void process(Frame message) {
@@ -144,7 +142,6 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
 
             case "DISCONNECT": // need to remove from all topics
                 Disconnect disconnectMessage = (Disconnect) message;
-                ConcurrentHashMap<Integer, String> subscriptions = clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId);
                 for (ConcurrentHashMap<Integer, Integer> topicMap : clientController.topics.values()) { // remove the user from each topic he belongs.
                     try {
                         topicMap.remove(connectionHandlerId);
@@ -165,11 +162,6 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
             connectionsImpl.send(connectionHandlerId, ret);
         }
 
-    }
-
-    private void messageToObject(String message) {
-        // curArrayMessage convert to object style
-        // delete the last line
     }
 
     @Override

@@ -1,7 +1,6 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
-import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
 
 import java.io.IOException;
@@ -12,50 +11,45 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> { // thread per client
 
     private final int port;
-    private final Supplier<StompMessagingProtocolimplement> protocolFactory;
-    private final Supplier<EncoderDecoderImplement> encdecFactory;
+    private final Supplier<StompMessagingProtocol<T>> protocolFactory;
+    private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
-    private ConnectionImpl<Frame> connections;
-    private int  connectionsHandlerId;
-    private ClientController clientController;
+    private ConnectionImpl<T> connections;
+    private int  connectionId;
 
     public BaseServer(// need to check if the clien already logged in here or in the client protocol?????????
             int port,
-            Supplier<StompMessagingProtocolimplement> protocolFactory,
-            Supplier<EncoderDecoderImplement> encdecFactory) {
+            Supplier<StompMessagingProtocol<T>> protocolFactory,
+            Supplier<MessageEncoderDecoder<T>> encdecFactory) {
 
         this.port = port;
         this.protocolFactory = protocolFactory;
         this.encdecFactory = encdecFactory;
 		this.sock = null;
-        connections = new ConnectionImpl<>();
-        connectionsHandlerId = 1;
-        this.clientController = new ClientController();
     }
 
     @Override
     public void serve() {
+        connections = new ConnectionImpl<T>();
+        connectionId = 1;
 
         try (ServerSocket serverSock = new ServerSocket(port)) {
 			System.out.println("Server started");
-
             this.sock = serverSock; //just to be able to close
-
             while (!Thread.currentThread().isInterrupted()) {
 
                 Socket clientSock = serverSock.accept();
-                StompMessagingProtocolimplement protocol = protocolFactory.get();
-                protocol.start(connectionsHandlerId , connections);
-                protocol.initializeController(clientController);
+                StompMessagingProtocol<T> protocol =  protocolFactory.get();
+                protocol.start(connectionId , connections);
 
-                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler(
+                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<T>(
                         clientSock,
                         encdecFactory.get(),
                         protocol,
-                        connectionsHandlerId,
+                        connectionId,
                         connections);
-                connections.addNewConnectionHandler(connectionsHandlerId, handler); // add new connection to the connectionMap- is the id unique per trting of connection or per client???????????????
-                connectionsHandlerId++; //just for testing need to rmove note
+                connections.addNewConnectionHandler(connectionId, handler); // add new connection to the connectionMap- is the id unique per trting of connection or per client???????????????
+                connectionId++; //just for testing need to rmove note
                 execute(handler);
             }
         } catch (IOException ex) {

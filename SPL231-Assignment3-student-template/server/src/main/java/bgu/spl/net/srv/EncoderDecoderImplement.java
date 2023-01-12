@@ -82,6 +82,9 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
                 return (message.toString()).getBytes();
             }
 
+            
+
+
 //check what happens if \n or \0
     public byte[] encode (String message){
         //byte[] a = message.toString().getBytes();
