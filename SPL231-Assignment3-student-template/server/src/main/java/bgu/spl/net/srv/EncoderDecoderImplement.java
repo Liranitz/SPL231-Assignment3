@@ -88,11 +88,11 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
             public byte[] encode (Frame message){
                 return (message.toString()).getBytes();
             }
-
+//check what happens if \n or \0
     public byte[] encode (String message){
         byte[] a = message.toString().getBytes();
         byte[] b = (message.toString() + "\n").getBytes();
-        return (message.toString() + "\0").getBytes();
+        return (message.toString() + '\u0000').getBytes();
     }
 
         }
