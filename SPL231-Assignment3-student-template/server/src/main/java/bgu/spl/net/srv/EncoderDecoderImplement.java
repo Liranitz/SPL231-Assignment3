@@ -42,8 +42,6 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
         return result;
     }
 
-
-
     public Frame parseStringToFrame(String nextString) {
         System.out.println(nextString);
         if (nextString != null && nextString != "null") {
@@ -62,9 +60,7 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
                 String destination = frameParts[1].split(":")[1];
                 int startIndexOfBody = nextString.indexOf("\n", nextString.indexOf("\n") + 1) + 1;
                 String body = nextString.substring(startIndexOfBody);
-                return new Send(destination, body);
-                
-               
+                return new Send(destination, body);                         
             }
                 
 

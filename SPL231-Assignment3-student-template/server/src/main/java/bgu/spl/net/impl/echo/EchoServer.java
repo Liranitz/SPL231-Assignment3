@@ -39,12 +39,12 @@ public class EchoServer {
         //  );
         //  reactor.serve();
 
-         Server<Frame> react = new Reactor(Runtime.getRuntime().availableProcessors(),
-         7777, //port
-         () -> new StompMessagingProtocolimplement(), //protocol factory
-         EncoderDecoderImplement::new);
+        //  Server<Frame> react = new Reactor(Runtime.getRuntime().availableProcessors(),
+        //  7777, //port
+        //  () -> new StompMessagingProtocolimplement(), //protocol factory
+        //  EncoderDecoderImplement::new);
         
-        react.serve();
+        // react.serve();
         }
 
 }
