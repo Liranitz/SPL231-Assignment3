@@ -2,7 +2,6 @@ package bgu.spl.net.impl.echo;
 
 import bgu.spl.net.srv.*;
 
-import java.util.function.Supplier;
 
 public class EchoServer {
 

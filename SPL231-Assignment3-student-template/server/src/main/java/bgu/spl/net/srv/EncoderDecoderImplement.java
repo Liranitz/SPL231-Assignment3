@@ -4,9 +4,8 @@ import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FramesForClient.*;
 
-import java.beans.Encoder;
+
 import java.nio.charset.StandardCharsets;
-import java.rmi.server.ExportException;
 import java.util.Arrays;
 
 public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
@@ -47,7 +46,6 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
         //&& nextString != "\n" && nextString != "\0" && nextString.length() > 1  && nextString != "null" 
         if (nextString != null ) {
             String[] frameParts = nextString.split("\n");
-            int index = 0;
             String type = frameParts[0];
 
             try {
@@ -60,12 +58,9 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
             if (type.equals("SEND")){
                 String destination = frameParts[1].split(":")[1];
                 int startIndexOfBody = nextString.indexOf("\n", nextString.indexOf("\n") + 1) + 1;
-                String body = nextString.substring(startIndexOfBody);
-<<<<<<< HEAD
-                return new Send(destination, body);                         
-=======
+                String body = nextString.substring(startIndexOfBody);                       
                 return new Send(destination, body);
->>>>>>> 768ef56d402913fe01ea2360b6217e6faf39b233
+
             }
             if (type.equals("SUBSCRIBE"))
                 return new Subscribe( frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]), Integer.parseInt(frameParts[3].split(":")[1]));
