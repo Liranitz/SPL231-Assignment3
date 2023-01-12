@@ -126,14 +126,18 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 else {
                     // and now send message to everyone who subscribed this topic
                     for (Integer handlerId : clientsOfTopic.keySet()) {
+                        if(handlerId != this.connectionHandlerId){
                         Message messageToSend = new Message(clientsOfTopic.get(handlerId), this.messageId, topic, body);
                         connectionsImpl.send(handlerId, messageToSend);
+                        }
                     }
+                    Message messageToSend = new Message(clientsOfTopic.get(this.connectionHandlerId), this.messageId, topic, body);
+                    ret = messageToSend;
                     messageId++;
                     // String curTopic = mes.getDestinatio();
                     // int messageReceipt = new int..
+                    break;
                 }
-                break;
 
             case "DISCONNECT": // need to remove from all topics
                 Disconnect disconnectMessage = (Disconnect) message;

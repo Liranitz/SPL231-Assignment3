@@ -68,7 +68,7 @@ void StompProtocol::send_messages_by_event(string path_message ,ConnectionHandle
         output_frame += "description:";
         output_frame += e.get_discription();
         output_frame += "\n";
-        output_frame += "\0";
+        //output_frame += "\0";
         connectionHandler.sendLine(output_frame);
         //send to ...
     }
