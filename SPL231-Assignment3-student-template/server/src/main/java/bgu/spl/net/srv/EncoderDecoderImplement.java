@@ -45,8 +45,9 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
 
     public Frame parseStringToFrame(String nextString) {
-        System.out.println(nextString);
-        if (nextString != null && nextString != "null") {
+        //System.out.println(nextString);
+        //&& nextString != "\n" && nextString != "\0" && nextString.length() > 1  && nextString != "null" 
+        if (nextString != null ) {
             String[] frameParts = nextString.split("\n");
             int index = 0;
             String type = frameParts[0];
@@ -63,11 +64,7 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
                 int startIndexOfBody = nextString.indexOf("\n", nextString.indexOf("\n") + 1) + 1;
                 String body = nextString.substring(startIndexOfBody);
                 return new Send(destination, body);
-                
-               
             }
-                
-
             if (type.equals("SUBSCRIBE"))
                 return new Subscribe( frameParts[1].split(":")[1], Integer.parseInt(frameParts[2].split(":")[1]), Integer.parseInt(frameParts[3].split(":")[1]));
 
@@ -78,7 +75,6 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
                 return new Error("wrong message");
             }
             }
-
             
         return null; //need to return erorr??????????????
         }

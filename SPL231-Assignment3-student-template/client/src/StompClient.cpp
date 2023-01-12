@@ -44,8 +44,6 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
                 //need to close only the socket?
                 connectionHandler.close();
             }
-
-        
             //find out which act it is and do it.
         }
         //attenation - here it is at the first place
@@ -54,43 +52,35 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
         }
     }
 
-void input_from_keyboard(ConnectionHandler &connectionHandler){
-    //ClientData cur_ch_client = connectionHandler.();
-    //cout << cur_ch_client.get_name();
-    //int numOfRec = 0;    
+void input_from_keyboard(ConnectionHandler &connectionHandler){  
     while (1) { // need to be like that?
-
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
         string return_line = StompProtocol::parse_to_frame(line , connectionHandler );
-        if (!connectionHandler.sendLine(return_line)) { //figure out if need to delete him
-            std::cout << "Disconnected. Exiting...\n" << std::endl;
-            break;
+        if(return_line != ""){
+            if (!connectionHandler.sendLine(return_line)) { //figure out if need to delete him
+                std::cout << "Disconnected. Exiting...\n" << std::endl;
+                break;
+            }
         }
     }
 }
 
 vector<string> wait_for_login(){
     while(1){ // figure out if need to be otherway
-        // const short bufsize = 1024;
-        // char buf[bufsize];
-        // cin.getline(buf, bufsize); //
-        // string line(buf);
-        // vector<string> strs;
-        // string output = "";
-        // boost::split(strs, line, boost::is_any_of(" "));
-
-        // string output_frame = "";
-        // string cur_input= "";
-        // getline(cin , cur_input);
-
+        const short bufsize = 1024;
+        char buf[bufsize];
+        cin.getline(buf, bufsize); //
+        string line(buf);
+        vector<string> strs;
+        boost::split(strs, line, boost::is_any_of(" "));
         //mock of login
-        string cur_input = "login 127.0.0.1:7777 lidan 123456";
+        //string cur_input = "login 127.0.0.1:7777 lidan 123456";
 
         vector<string> result;
-        result = boost::split(result, cur_input, boost::is_any_of(" "));
+        result = boost::split(result, line, boost::is_any_of(" "));
         string typeMessage = result[0];
         if (typeMessage == "login"){
             return result;
@@ -133,11 +123,11 @@ void read_from_socket(ConnectionHandler &connectionHandler){
  * 
 * This code assumes that the server replies the exact text the client sent it (as opposed to the practical session example)
 */
+// inputs
+//  join Germany_Japan
+    //  login 127.0.0.1:7777 lidan 123456
+    //  report /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/events1.json
 int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 2 - port
-    //if (argc < 3) {
-    //    std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
-    //    return -1;
-    //*
     vector<string> ret;
     ret = wait_for_login();
     vector<string> ports;
@@ -149,10 +139,6 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
     name  =  ret[2];
     string pass;
     pass = ret[3]; 
-    string outer_frame;
-    //  join Germany_Japan
-    //  login 127.0.0.1:7777 lidan 123456
-    //  report /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/events1.json
     ClientData cur_client = ClientData(name ,pass);
     ConnectionHandler connectionHandler(host,port, &cur_client); // figure out how
     //KeyBoard_imp keybor(connectionHandler);
@@ -161,25 +147,21 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
         return 1;
         // figure out how to get back to the function
     }
-    outer_frame = "CONNECT\n";
-    outer_frame += "accept-vesion:1.2";
-    outer_frame += "\n";
-    outer_frame += "host:stomp.cs.bgu.ac.il";
-    outer_frame += "\n";
-    outer_frame += "login:";
-    outer_frame += name ;
-    outer_frame += "\n";
-    outer_frame += "passcode:";
-    outer_frame += pass;
-    outer_frame += "\n\n\0";
+    
+    std::ostringstream outer_frame;
+    outer_frame << "CONNECT\n";
+    outer_frame << "accept-vesion:1.2\n" << "host:stomp.cs.bgu.ac.il\n";
+    outer_frame << "login:" << name << "\n";
+    outer_frame << "passcode:" << pass << "\n\n";
+    string outer_frame_string;
+    outer_frame_string = outer_frame.str();
+
+    //outer_frame += "\n\n\0";
     //outer_frame = StompProtocol::parse_to_frame()
     //cur_client.actions_by_receipt[cur_client.receipts_counter] = "CONNECT SERVER";
     cur_client.receipts_counter = cur_client.receipts_counter + 1;
-    //outer_frame += "\n";
 
-    //string send_line = '\0';
-
-    connectionHandler.sendLine(outer_frame);
+    connectionHandler.sendLine(outer_frame_string);
 
     std::thread read_input_thread(&input_from_keyboard ,  std::ref(connectionHandler));
     std::thread read_socket_thread(&read_from_socket , std::ref(connectionHandler));
