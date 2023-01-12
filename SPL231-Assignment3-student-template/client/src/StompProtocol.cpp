@@ -17,26 +17,62 @@ void StompProtocol::send_messages_by_event(string path_message ,ConnectionHandle
     string direction = cur_events.team_a_name + "_" + cur_events.team_b_name;
     string cur_name = connectionHandler.cur_client_data().get_name();
     for(Event e : cur_events.events){
-        string output_frame = "";
-        output_frame = "SEND\n";
-        output_frame += "destination:";
-        output_frame += direction;
-        output_frame += "\n";
-        output_frame += "\n";
-        output_frame += "user:";
-        output_frame += cur_name;
-        output_frame += "\n";
-        output_frame += "team a:";
-        output_frame += cur_events.team_a_name;
-        output_frame += "\n";
-        output_frame += "team b:";
-        output_frame += cur_events.team_b_name;
-        output_frame += "\n";
-        output_frame += "time:";
-        output_frame += std::to_string(e.get_time());
-        output_frame += "\n";
-        
-        // std::stringstream output_frame;
+        std::ostringstream output_frame;
+        output_frame << "SEND\n";
+        output_frame << "destination:" << direction << "\n\n";
+        output_frame << "user:" << cur_name << "\n";
+        output_frame << "team a:" << cur_events.team_a_name << "\n";
+        output_frame << "team b:" << cur_events.team_b_name << "\n";
+        output_frame << "time:" << e.get_time() << "\n";
+        output_frame << "team a updates:" << "\n";
+        for (auto const& cur : e.get_team_a_updates()) {
+            output_frame << "   " << cur.first << ":" << cur.second << "\n";
+        }
+        output_frame << "\n";
+        output_frame << "team b updates:"<< "\n";
+        for (auto const& cur : e.get_team_b_updates()) {
+            output_frame << "   " << cur.first << ":" << cur.second << "\n";
+        }
+        output_frame << "\n";
+        output_frame << "description:" << "\n" << e.get_discription() << "\n";
+
+        // string output_frame = "";
+        // output_frame = "SEND\n";
+        // output_frame += "destination:";
+        // output_frame += direction;
+        // output_frame += "\n";
+        // output_frame += "\n";
+        // output_frame += "user:";
+        // output_frame += cur_name;
+        // output_frame += "\n";
+        // output_frame += "team a:";
+        // output_frame += cur_events.team_a_name;
+        // output_frame += "\n";
+        // output_frame += "team b:";
+        // output_frame += cur_events.team_b_name;
+        // output_frame += "\n";
+        // output_frame += "time:";
+        // output_frame += std::to_string(e.get_time());
+        // output_frame += "\n";
+        // output_frame += "team a updates:";
+        // for (auto const& x : e.get_team_a_updates())
+        //     {
+        //         string cur_desc = "   " + x.first + ":" + x.second + "\n";
+        //         output_frame += cur_desc;
+        //     }        
+        //     output_frame += "\n";
+        // output_frame += "team b updates:";
+        // for (auto const& x : e.get_team_b_updates())
+        //     {
+        //         string cur_desc = "   " + x.first + ":" + x.second + "\n";
+        //         output_frame += cur_desc;
+        //     }
+        // output_frame += "\n";
+        // output_frame += "description:";
+        // output_frame += e.get_discription();
+        // output_frame += "\n";
+        //output_frame += "\0";
+         // std::stringstream output_frame;
         // output_frame << "SEND\n";
         // output_frame << "destination:/" << direction << "\n\n";
         // output_frame << "user:" << cur_name << "\n";
@@ -44,32 +80,13 @@ void StompProtocol::send_messages_by_event(string path_message ,ConnectionHandle
         // output_frame << "team b:" << cur_events.team_b_name << "\n";
         // output_frame << "time:" << e.get_time() << "\n";
         // std::string output_string = output_frame.str();
-
         // dont need to take in consideration???
         // output_frame += "general game updates:";
         // output_frame += std::to_string(e.get_time());
         // output_frame += "\n";
         // keep add stuff
-        output_frame += "team a updates:";
-        for (auto const& x : e.get_team_a_updates())
-            {
-                string cur_desc = "   " + x.first + ":" + x.second + "\n";
-                output_frame += cur_desc;
-            }        
-            output_frame += "\n";
-        
-        output_frame += "team b updates:";
-        for (auto const& x : e.get_team_b_updates())
-            {
-                string cur_desc = "   " + x.first + ":" + x.second + "\n";
-                output_frame += cur_desc;
-            }
-        output_frame += "\n";
-        output_frame += "description:";
-        output_frame += e.get_discription();
-        output_frame += "\n";
-        //output_frame += "\0";
-        connectionHandler.sendLine(output_frame);
+        string output = output_frame.str();
+        connectionHandler.sendLine(output);
         //send to ...
     }
 }
@@ -79,7 +96,8 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
         //ClientData cur_ch_client = connectionHandler.cur_client;
         //  lir = "Liran";
         //  map_of_subscribes.insert({lir , 5});
-        std::string output_frame = "";
+        std::string output_frame_str = "";
+        std::ostringstream output_frame;
         std::string cur_input = input_string;
         std::vector<std::string> result;
         result = boost::split(result, cur_input, boost::is_any_of(" "));
@@ -89,20 +107,15 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
             //if(c_h.isConnect()) check if the res[1] (host) is already connected  
             // to another port.
             // socket error, cannoot
-
             //try to connect the CH , res[1] ,' : ' res[1]
             //c_h.connect();
-            output_frame = "CONNECT\n";
-            output_frame += "accept-vesion:1.2";
-            output_frame += "\n";
-            output_frame += "host:stomp.cs.bgu.ac.il";
-            output_frame += "\n";
-            output_frame += "login:";
-            output_frame += result[2] ;
-            output_frame += "\n";
-            output_frame += "passcode:";
-            output_frame += result[3];
-            output_frame += "\n\n\0";
+
+            output_frame << "CONNECT\n";
+            output_frame << "accept-vesion:1.2\n";
+            output_frame << "host:stomp.cs.bgu.ac.il\n";
+            output_frame << "login:" << result[2] << "\n";
+            output_frame << "passcode:" << result[3] << "\n\n\0";
+            output_frame_str = output_frame.str();
             // ADD A CONNECT TO THE CH
             // Figure out - if connect a new one ? then what happens? has to be in another window?
             // vector<string> ret;
@@ -125,58 +138,35 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
             //     return 1;
             //     // figure out how to get back to the function
             // }
-
             //Not sure if needed
             //connectionHandler.cur_client_data().is_logged_in = true;
         }
         else if(typeMessage == "join"){
             int curSubIndex = connectionHandler.cur_client_data().subscribe_counter;
-            string curSubIndexStr = "";
-            //curSubIndexStr = curSubIndexStr + std::to_string(curSubIndex);
             int curRecIndex = connectionHandler.cur_client_data().receipts_counter;
-            //string curRecIndexStr = "" + curRecIndex;
-            output_frame = "SUBSCRIBE\n"; 
-            output_frame += "destination:";
-            output_frame += result[1];    
-            output_frame += '\n';
-            output_frame += "id:";
-            output_frame += std::to_string(curSubIndex);
-            output_frame += "\n";
-            output_frame += "receipt:";
-            output_frame += std::to_string(curRecIndex);
-            output_frame += "\n";
-            output_frame += "\n";
-            output_frame += "\0";
-            string action;
-            //action = "ADD " + result[1] + " " + std::to_string(curSubIndex);
-            //connectionHandler.cur_client_data().actions_by_receipt[curRecIndex] = action;
+            output_frame << "SUBSCRIBE\n";
+            output_frame << "destination:" << result[1] << "\n";
+            output_frame << "id:" << curSubIndex << "\n";
+            output_frame << "receipt:" << curRecIndex << "\n\n\0";
+            output_frame_str = output_frame.str();
             connectionHandler.cur_client_data().topic_to_id_map[result[1]] = curSubIndex;
             connectionHandler.cur_client_data().subscribe_counter = connectionHandler.cur_client_data().subscribe_counter + 1;
             connectionHandler.cur_client_data().receipts_counter = connectionHandler.cur_client_data().receipts_counter + 1;
-            //cur_subscribe++;  
         }
         else if(typeMessage == "exit"){
             int getSubIndexByTopic = connectionHandler.cur_client_data().topic_to_id_map[result[1]];
             int curRecIndex = connectionHandler.cur_client_data().receipts_counter;
-            output_frame = "UNSUBSCRIBE\n"; 
-            output_frame += "id:";
-            output_frame += std::to_string(getSubIndexByTopic);
-            output_frame += "\n";
-            output_frame += "receipt:";
-            output_frame += std::to_string(curRecIndex);
-            output_frame += "\n"; 
-            output_frame += "\n\0";
-            //string action;
-            //action = "REMOVE " + result[1] + " " + std::to_string(getSubIndexByTopic);
+            output_frame << "UNSUBSCRIBE\n";
+            output_frame << "id:" << getSubIndexByTopic << "\n";
+            output_frame << "receipt:" << curRecIndex << "\n\n\0";
             try{
-            connectionHandler.cur_client_data().topic_to_id_map.erase(result[1]);
+                connectionHandler.cur_client_data().topic_to_id_map.erase(result[1]);
+                output_frame_str = output_frame.str();
             }
             catch (...){
                 cout << "User is not subscribed to that topic";
-                output_frame = "";
+                output_frame_str = "";
             }
-
-            //connectionHandler.cur_client_data().actions_by_receipt[curRecIndex] = action;
             connectionHandler.cur_client_data().receipts_counter = connectionHandler.cur_client_data().receipts_counter + 1;
         }
         else if(typeMessage == "report" && connectionHandler.is_logged_in){
@@ -186,13 +176,6 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
                 string path;
                 path = result[1];
                 send_messages_by_event(path , connectionHandler);
-                // output_frame = "SEND\n"; 
-                // output_frame += "destination:";
-                // output_frame += result[1];
-                // output_frame += "\n";
-                // output_frame += result[2];
-                // output_frame += "\n";
-                output_frame += "\n\0";
                 }
             catch(...){
                 cout << "User is not subscribed to that topic";
@@ -207,24 +190,20 @@ std::string StompProtocol::parse_to_frame(string input_string , ConnectionHandle
         else if(typeMessage == "logout"){
             //gets the receipt login id from server
             int curRecIndex = connectionHandler.cur_client_data().receipts_counter;
-            output_frame = "DISCONNECT\n"; 
-            output_frame += "receipt:";
-            output_frame += std::to_string(curRecIndex);
-            output_frame += "\n"; 
-            output_frame += "\n\0";
+            output_frame << "DISCONNECT\n";
+            output_frame << "receipt:" << curRecIndex << "\n\n\0";
+            output_frame_str = output_frame.str();
             connectionHandler.is_logged_in = false;
             connectionHandler.cur_client_data().actions_by_receipt[curRecIndex] = "CLOSE";
         }
         
-        if(output_frame != "") // or otherways
+        if(output_frame_str != "") // or otherways
         {
             result.clear();
-            return output_frame;
+            return output_frame_str;
         }
         else{
-            string ret_out;
-            ret_out =  "\0";
-            return ret_out;
+            return output_frame_str;
         }
     }
 
