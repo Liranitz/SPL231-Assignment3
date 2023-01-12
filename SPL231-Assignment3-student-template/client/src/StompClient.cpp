@@ -52,6 +52,9 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
         if (result_message[0] == "CONNECTED"){
             connectionHandler.is_logged_in = true;
         }
+        if (result_message[0] == "MESSAGE"){
+            connectionHandler.is_logged_in = true;
+        }
     }
 
 void input_from_keyboard(ConnectionHandler &connectionHandler){
