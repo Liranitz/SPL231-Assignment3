@@ -82,14 +82,14 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
             @Override
             public byte[] encode (Frame message){
-                return (message.toString() + "\n").getBytes();
+                return (message.toString()).getBytes();
             }
 
+//check what happens if \n or \0
     public byte[] encode (String message){
-        byte[] a = message.toString().getBytes();
-        byte[] b = (message.toString() + "\n").getBytes();
-        return (message.toString() + "\n").getBytes();
+        //byte[] a = message.toString().getBytes();
+        //byte[] b = (message.toString() + "\n").getBytes();
+        return (message.toString()).getBytes();
     }
-
-        }
+}
 
