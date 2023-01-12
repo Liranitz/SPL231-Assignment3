@@ -49,7 +49,6 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
         //&& nextString != "\n" && nextString != "\0" && nextString.length() > 1  && nextString != "null" 
         if (nextString != null ) {
             String[] frameParts = nextString.split("\n");
-            int index = 0;
             String type = frameParts[0];
 
             try {

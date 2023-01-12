@@ -29,6 +29,7 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
             std::vector<std::string> result_do;
             result_do = boost::split(result_do, act, boost::is_any_of(" "));
             std::string type_do = result_do[0];
+            //can remove it !!!
             if(type_do == "ADD"){
                 //params :
                 // result_do[0] = add , result_do[1] = stringOfTopic , result_do[2] = ID_ofSub
@@ -50,6 +51,11 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
         if (result_message[0] == "CONNECTED"){
             connectionHandler.is_logged_in = true;
         }
+        else if(result_message[1] == "MESSAGE"){
+            //...
+        }
+
+        //case if got a "SEND" add the event
     }
 
 void input_from_keyboard(ConnectionHandler &connectionHandler){  

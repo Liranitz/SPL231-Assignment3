@@ -21,8 +21,21 @@ public class EchoServer {
         //        EncoderDecoderImplement::new //message encoder decoder factory
         // ).serve();
 
+        // Server.reactor(
+        //          Runtime.getRuntime().availableProcessors(),
+        //          7777, //port
+        //          () -> new StompMessagingProtocolimplement() , //protocol factory
+        //          () -> new EncoderDecoderImplement() //message encoder decoder factory
+        //  ).serve();
 
-        // Supplier<StompMessagingProtocolimplement> protocolFactory;
+               Server.reactor(
+               Runtime.getRuntime().availableProcessors(),
+               7777, //port
+               () -> new StompMessagingProtocolimplement(), //protocol factory
+               EncoderDecoderImplement::new //message encoder decoder factory
+       ).serve();
+
+          // Supplier<StompMessagingProtocolimplement> protocolFactory;
         // Supplier<EncoderDecoderImplement> encdecFactory;
         //     this.port = port;
         //     this.protocolFactory = protocolFactory;
@@ -31,20 +44,12 @@ public class EchoServer {
         //     connections = new ConnectionImpl<>();
         //     connectionsHandlerId = 1;
         // }
-        // Server<Frame> reactor = Server.reactor(
-        //          Runtime.getRuntime().availableProcessors(),
-        //          7777, //port
-        //          () -> new StompMessagingProtocolimplement(), //protocol factory
-        //          EncoderDecoderImplement::new //message encoder decoder factory
-        //  );
-        //  reactor.serve();
-
-         Server<Frame> react = new Reactor(Runtime.getRuntime().availableProcessors(),
-         7777, //port
-         () -> new StompMessagingProtocolimplement(), //protocol factory
-         EncoderDecoderImplement::new);
+        //  Server<Frame> react = new Reactor(Runtime.getRuntime().availableProcessors(),
+        //  7777, //port
+        //  () -> new StompMessagingProtocolimplement(), //protocol factory
+        //  EncoderDecoderImplement::new);
         
-        react.serve();
+        // react.serve();
         }
 
 }
