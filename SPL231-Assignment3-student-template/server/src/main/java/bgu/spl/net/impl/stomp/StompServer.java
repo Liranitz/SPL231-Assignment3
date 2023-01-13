@@ -8,11 +8,11 @@ public class StompServer {
 
     public static void main(String[] args) {
       
-    //     Server.threadPerClient(
-    //         7777, //port
-    //        () -> new StompMessagingProtocolimplement(), //protocol factory
-    //        EncoderDecoderImplement::new //message encoder decoder factory
-    // ).serve();
+        Server.threadPerClient(
+            7777, //port
+           () -> new StompMessagingProtocolimplement(), //protocol factory
+           EncoderDecoderImplement::new //message encoder decoder factory
+    ).serve();
 
      Server.reactor(
                  Runtime.getRuntime().availableProcessors(),

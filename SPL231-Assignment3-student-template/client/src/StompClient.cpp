@@ -5,12 +5,11 @@
 using namespace boost;
 using namespace std;
 //using namespace ClientData;
-
-
 #include "boost/algorithm/string.hpp"
 #include "ClientReader.h"
 #include "StompProtocol.h"
 #include <thread>
+#include "../include/EventController.h"
 
 void parse_to_action(ConnectionHandler &connectionHandler , string message){
         std::string output_frame = "";
@@ -55,13 +54,13 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
         }
     }
 
-void input_from_keyboard(ConnectionHandler &connectionHandler){  
+void input_from_keyboard(ConnectionHandler &connectionHandler, EventController &eventController){  
     while (1) { // need to be like that?
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
-        string return_line = StompProtocol::parse_to_frame(line , connectionHandler );
+        string return_line = StompProtocol::parse_to_frame(line , connectionHandler, eventController );
         if(return_line != ""){
             if (!connectionHandler.sendLine(return_line)) { //figure out if need to delete him
                 std::cout << "Disconnected. Exiting...\n" << std::endl;
@@ -131,6 +130,7 @@ void read_from_socket(ConnectionHandler &connectionHandler){
     //  login 127.0.0.1:7777 lidan 123456
     //  report /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/events1.json
 int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 2 - port
+    EventController eventController;
     vector<string> ret;
     ret = wait_for_login();
     vector<string> ports;
@@ -166,7 +166,7 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
 
     connectionHandler.sendLine(outer_frame_string);
 
-    std::thread read_input_thread(&input_from_keyboard ,  std::ref(connectionHandler));
+    std::thread read_input_thread(&input_from_keyboard ,  std::ref(connectionHandler), std::ref(eventController) );
     std::thread read_socket_thread(&read_from_socket , std::ref(connectionHandler));
     read_input_thread.join();
     read_socket_thread.join();
