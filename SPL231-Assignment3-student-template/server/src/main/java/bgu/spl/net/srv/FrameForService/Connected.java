@@ -19,7 +19,7 @@ public class Connected extends Frame {
     @Override
     public String toString() {
         return "CONNECTED\n" +
-                "version :1.2" + '\n' +
+                "version :1.2"  +'\n' +
                 '\u0000';
     }
 }

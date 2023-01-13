@@ -28,12 +28,12 @@ public class EchoServer {
         //          () -> new EncoderDecoderImplement() //message encoder decoder factory
         //  ).serve();
 
-               Server.reactor(
-               Runtime.getRuntime().availableProcessors(),
-               7777, //port
-               () -> new StompMessagingProtocolimplement(), //protocol factory
-               EncoderDecoderImplement::new //message encoder decoder factory
-       ).serve();
+      //          Server.reactor(
+      //          Runtime.getRuntime().availableProcessors(),
+      //          7777, //port
+      //          () -> new StompMessagingProtocolimplement(), //protocol factory
+      //          EncoderDecoderImplement::new //message encoder decoder factory
+      //  ).serve();
 
           // Supplier<StompMessagingProtocolimplement> protocolFactory;
         // Supplier<EncoderDecoderImplement> encdecFactory;
@@ -44,13 +44,21 @@ public class EchoServer {
         //     connections = new ConnectionImpl<>();
         //     connectionsHandlerId = 1;
         // }
+        // Server<Frame> reactor = Server.reactor(
+        //          Runtime.getRuntime().availableProcessors(),
+        //          7777, //port
+        //          () -> new StompMessagingProtocolimplement(), //protocol factory
+        //          EncoderDecoderImplement::new //message encoder decoder factory
+        //  );
+        //  reactor.serve();
+
         //  Server<Frame> react = new Reactor(Runtime.getRuntime().availableProcessors(),
         //  7777, //port
         //  () -> new StompMessagingProtocolimplement(), //protocol factory
         //  EncoderDecoderImplement::new);
         
         // react.serve();
-        }
+        //}
 
 }
 

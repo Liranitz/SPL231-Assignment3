@@ -51,7 +51,7 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message){
         if (result_message[0] == "CONNECTED"){
             connectionHandler.is_logged_in = true;
         }
-        else if(result_message[1] == "MESSAGE"){
+        else if(result_message[0] == "MESSAGE"){
             //...
         }
 

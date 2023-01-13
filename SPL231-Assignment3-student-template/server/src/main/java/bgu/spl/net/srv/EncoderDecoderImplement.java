@@ -61,7 +61,7 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
             if (type.equals("SEND")){
                 String destination = frameParts[1].split(":")[1];
                 int startIndexOfBody = nextString.indexOf("\n", nextString.indexOf("\n") + 1) + 1;
-                String body = nextString.substring(startIndexOfBody);
+                String body = nextString.substring(startIndexOfBody);                       
                 return new Send(destination, body);
             }
             if (type.equals("SUBSCRIBE"))

@@ -29,7 +29,7 @@ public class Message extends Frame {
         "subscription:"+subscriptionId+ '\n' +
         "message-id:"+messageId+ '\n' +
         "destination:"+destination+ '\n' +
-         body + '\n' + 
+         body  + '\n' + 
         '\u0000';
     }
 }

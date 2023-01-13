@@ -9,23 +9,20 @@ import bgu.spl.net.srv.FrameForService.Reciept;
 import bgu.spl.net.srv.FramesForClient.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame> {
     private ConnectionImpl<Frame> connectionsImpl;
-    // curId - connection handler ID
     private int connectionHandlerId;
     private ClientController clientController;
     private int messageId;
+  
+   
 
     public void start(int connectionId, Connections<Frame> connections) {
         this.connectionsImpl = (ConnectionImpl<Frame>) connections;
         this.connectionHandlerId = connectionId;
-        this.messageId = 1;
+        this.clientController = this.connectionsImpl.clientController;      
     }
 
-    public void initializeController(ClientController clientController) {
-        this.clientController = clientController;
-    }
 
     @Override
     public void process(Frame message) {
@@ -117,31 +114,34 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 Send sendMessage = (Send) message;
                 String topic = sendMessage.getDestination();
                 String body = sendMessage.getBody();
-                ConcurrentHashMap<Integer, Integer> clientsOfTopic = clientController.topics.get(topic);
-                // check that the client has subscribes to this topic
-                if (!(clientsOfTopic.containsKey(connectionHandlerId))) {
-                    ret = new Error("please subscribe to this topic before you sendin a message");
+                ConcurrentHashMap<Integer, Integer> clientsOfTopic = null;
+                try {
+                    clientsOfTopic = clientController.topics.get(topic);
+                }
+                catch (Exception exception){
+                    ret = new Error("this topic is not exist");
+                }
+              
+                if (clientsOfTopic == null){
+                    ret = new Error("this topic is not exist");
                 }
 
                 else {
-                    // and now send message to everyone who subscribed this topic
-                    for (Integer handlerId : clientsOfTopic.keySet()) {
-                        if(handlerId != this.connectionHandlerId){
-                        Message messageToSend = new Message(clientsOfTopic.get(handlerId), this.messageId, topic, body);
-                        connectionsImpl.send(handlerId, messageToSend);
-                        }
+                      // and now send message to everyone who subscribed this topic
+                      for (Integer handlerId : clientsOfTopic.keySet()){
+                         // if(handlerId != this.connectionHandlerId){
+                            Message messageToSend = new Message(clientsOfTopic.get(handlerId), this.messageId, topic, body);
+                            connectionsImpl.send(handlerId, messageToSend);
+                           // }     
+                      }                                                               
+                messageId++;
                     }
-                    Message messageToSend = new Message(clientsOfTopic.get(this.connectionHandlerId), this.messageId, topic, body);
-                    ret = messageToSend;
-                    messageId++;
                     // String curTopic = mes.getDestinatio();
                     // int messageReceipt = new int..
-                    break;
-                }
+                    break;                
 
             case "DISCONNECT": // need to remove from all topics
                 Disconnect disconnectMessage = (Disconnect) message;
-                ConcurrentHashMap<Integer, String> subscriptions = clientController.subscribeIdByconnectionsHandlerId.get(connectionHandlerId);
                 for (ConcurrentHashMap<Integer, Integer> topicMap : clientController.topics.values()) { // remove the user from each topic he belongs.
                     try {
                         topicMap.remove(connectionHandlerId);
@@ -162,11 +162,6 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
             connectionsImpl.send(connectionHandlerId, ret);
         }
 
-    }
-
-    private void messageToObject(String message) {
-        // curArrayMessage convert to object style
-        // delete the last line
     }
 
     @Override
