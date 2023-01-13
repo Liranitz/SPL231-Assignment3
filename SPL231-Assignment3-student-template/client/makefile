@@ -6,8 +6,8 @@ all: StompWCIClient
 EchoClient: bin/ConnectionHandler.o bin/echoClient.o
 	g++ -o bin/EchoClient bin/ConnectionHandler.o bin/echoClient.o $(LDFLAGS)
 
-StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o bin/ClientData.o
-	g++ -o bin/StompWCIClient bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o  bin/ClientData.o $(LDFLAGS)
+StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o bin/ClientData.o bin/EventController.o bin/GameEvents.o 
+	g++ -o bin/StompWCIClient bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/StompProtocol.o bin/KeyBoard_imp.o bin/ClientReader.o  bin/ClientData.o bin/EventController.o bin/GameEvents.o $(LDFLAGS)
 
 bin/ConnectionHandler.o: src/ConnectionHandler.cpp
 	g++ $(CFLAGS) -o bin/ConnectionHandler.o src/ConnectionHandler.cpp
@@ -32,6 +32,12 @@ bin/ClientReader.o: src/ClientReader.cpp
 
 bin/ClientData.o: src/ClientData.cpp
 	g++ $(CFLAGS) -o bin/ClientData.o src/ClientData.cpp
+
+bin/GameEvents.o: src/GameEvents.cpp
+	g++ $(CFLAGS) -o bin/GameEvents.o src/GameEvents.cpp
+
+bin/EventController.o: src/EventController.cpp
+	g++ $(CFLAGS) -o bin/EventController.o src/EventController.cpp
 
 .PHONY: clean
 clean:
