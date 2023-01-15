@@ -121,9 +121,14 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 catch (Exception exception){
                     ret = new Error("this topic is not exist");
                 }
-              
+
+                 
+
                 if (clientsOfTopic == null){
                     ret = new Error("this topic is not exist");
+                }
+                else if (!clientsOfTopic.containsKey(connectionHandlerId) ){
+                    ret = new Error("you are not subscribe to this topic" + message.toString());
                 }
 
                 else {
