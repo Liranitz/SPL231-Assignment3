@@ -1,16 +1,16 @@
 Germany VS Japan
 Game stats: 
 General stats: 
-active: false
-before halftime: false
+active: truefalse
+before halftime: truefalse
 
 Germany stats:
-goals: 1
-possession: 51%
+goals: 121
+possession: 90%55%51%
 
 Japan stats :
-goals: 2
-possession: 49%
+goals: 12
+possession: 10%45%49%
 
 Game event reports: 
 0 - kickoff:

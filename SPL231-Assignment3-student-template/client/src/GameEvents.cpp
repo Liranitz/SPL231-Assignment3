@@ -11,7 +11,7 @@ GameEvents::GameEvents(const GameEvents &other)
         : teamAname(other.teamAname), teamBname(other.teamBname), generalStats(other.generalStats), teamASats(other.teamASats), teamBSats(other.teamBSats),eventReport(other.eventReport) {}
 
 GameEvents::GameEvents(std::string _teamAname, std::string _teamBname) : teamAname(_teamAname) , teamBname(_teamBname),
-    generalStats(std::map< std::string, std::string >()), teamASats(std::map< std::string, std::string >()),teamBSats(std::map< std::string, std::string >()),
+    generalStats(std::map< std::string,  std::string >()), teamASats(std::map< std::string, std::string >()),teamBSats(std::map< std::string,  std::string >()),
     eventReport(std::vector<std::string> ())
 {}
 
@@ -38,7 +38,7 @@ GameEvents::GameEvents(std::string _teamAname, std::string _teamBname) : teamAna
 
  std::string GameEvents::prinKeyBesideValue(std::map< std::string, std::string > map){
      std::string  output;
-    for (auto it = generalStats.begin(); it != generalStats.end(); ++it) {
+    for (auto it = map.begin(); it != map.end(); ++it) {
         output+= it->first + ": "+ it->second + "\n";
         }
         return output;

@@ -131,9 +131,14 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                         exp.printStackTrace();
                     }
                 }
-              
+
+                 
+
                 if (clientsOfTopic == null){
                     ret = new Error("message : this topic is not exist\n\n" + message.toString());
+                }
+                else if (!clientsOfTopic.containsKey(connectionHandlerId) ){
+                    ret = new Error("you are not subscribe to this topic" + message.toString());
                 }
 
                 else {
@@ -171,6 +176,8 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
         if (ret != null) {
             connectionsImpl.send(connectionHandlerId, ret);
         }
+
+        
 
     }
 
