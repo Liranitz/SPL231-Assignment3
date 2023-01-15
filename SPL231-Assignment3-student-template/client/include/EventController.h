@@ -19,7 +19,8 @@ private:
    
 public:
     EventController();
-    void storeEvent(names_and_events &event, std::string userName, std::string topic);
+    void storeEvent(std::string message);
+     std::vector<std::string> split(const std::string& str, char delimiter);
     std::map<std::string,  std::map<std::string, GameEvents>> getMap();
     
 };

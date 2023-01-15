@@ -7,8 +7,6 @@ import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FrameForService.Message;
 import bgu.spl.net.srv.FrameForService.Reciept;
 import bgu.spl.net.srv.FramesForClient.*;
-
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame> {
@@ -70,7 +68,7 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     Reciept rec = new Reciept(unsSub.getRecId());
                     ret = rec;
                 } catch (Exception ex) {
-                    Error eror = new Error("You did not subscribe to that destination\n\n" + message.toString());// nee more detailed
+                    Error eror = new Error("You did not subscribe to that destination");// nee more detailed
                                                                                         // erorr????????
                     ret = eror;
                 }
@@ -121,21 +119,13 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     clientsOfTopic = clientController.topics.get(topic);
                 }
                 catch (Exception exception){
-                    ret = new Error("message : this topic is not exist\n\n" + message.toString()  );
-                    int x = connectionHandlerId;
-                    ConnectionHandler<Frame> cur = connectionsImpl.connection_Map.get(x);
-                    try{
-                    cur.close();
-                    }
-                    catch(IOException exp){
-                        exp.printStackTrace();
-                    }
+                    ret = new Error("this topic is not exist");
                 }
 
                  
 
                 if (clientsOfTopic == null){
-                    ret = new Error("message : this topic is not exist\n\n" + message.toString());
+                    ret = new Error("this topic is not exist");
                 }
                 else if (!clientsOfTopic.containsKey(connectionHandlerId) ){
                     ret = new Error("you are not subscribe to this topic" + message.toString());

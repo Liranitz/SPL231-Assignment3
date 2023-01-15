@@ -22,7 +22,7 @@ void StompProtocol::send_messages_by_event(string path_message, ConnectionHandle
     cur_events = parseEventsFile(path_message);
     string direction = cur_events.team_a_name + "_" + cur_events.team_b_name;
     string cur_name = connectionHandler.cur_client_data().get_name();
-    eventController.storeEvent(cur_events, cur_name, direction);
+   //eventController.storeEvent(cur_events, cur_name, direction);
     for (Event e : cur_events.events)
     {
         std::ostringstream output_frame;
