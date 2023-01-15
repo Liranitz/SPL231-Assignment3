@@ -26,6 +26,8 @@ public class Send extends Frame {
 
     @Override
     public String toString() {
-        return null;
-    }
+        return "SEND\n"+
+        "destination:"+destination+ '\n' +
+         body  + '\n' + 
+        '\u0000';    }
 }

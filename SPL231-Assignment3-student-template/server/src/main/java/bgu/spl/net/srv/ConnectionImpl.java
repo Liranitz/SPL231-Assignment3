@@ -1,9 +1,10 @@
 package bgu.spl.net.srv;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionImpl<T> implements Connections<T>{
-    private ConcurrentHashMap<Integer , ConnectionHandler<T>> connection_Map; // conne
+    protected ConcurrentHashMap<Integer , ConnectionHandler<T>> connection_Map; // conne
     protected ClientController clientController;
 
     public ConnectionImpl(){
@@ -17,6 +18,14 @@ public class ConnectionImpl<T> implements Connections<T>{
         ConnectionHandler<T> temp = connection_Map.get(connectionId);
         if (temp != null) {
             temp.send(msg);
+            if(msg instanceof Error){
+                try{
+                temp.close();
+                }
+                catch(IOException exp){
+                    exp.printStackTrace();
+                }
+            }
             return true;
         }
         else {

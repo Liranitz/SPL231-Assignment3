@@ -69,11 +69,16 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
 
             if (type.equals("UNSUBSCRIBE"))
                 return new Unsubscribe(Integer.parseInt(frameParts[1].split(":")[1]), Integer.parseInt(frameParts[2].split(":")[1]));
+            
+            else{
+                return new Error("malformed frame received");
+            }
+            
             }
             catch(Exception exp){// צריך להרחיב על הארור??????
-                return new Error("wrong message");
+                return new Error("malformed frame received");
             }
-            }
+        }
             
         return null; //need to return erorr??????????????
         }
