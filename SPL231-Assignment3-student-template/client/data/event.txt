@@ -5,12 +5,12 @@ active: false
 before halftime: false
 
 Germany stats:
-active: false
-before halftime: false
+goals: 1
+possession: 51%
 
-Japanstats :
-active: false
-before halftime: false
+Japan stats :
+goals: 2
+possession: 49%
 
 Game event reports: 
 0 - kickoff:

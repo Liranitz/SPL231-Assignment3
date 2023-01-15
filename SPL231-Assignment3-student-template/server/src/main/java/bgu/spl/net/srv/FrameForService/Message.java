@@ -15,8 +15,8 @@ public class Message extends Frame {
         this.destination = topic;
         this.body = body;
         this.Type = "MESSAGE";
-
     }
+    
     @Override
     public String getType() {
         return this.Type;

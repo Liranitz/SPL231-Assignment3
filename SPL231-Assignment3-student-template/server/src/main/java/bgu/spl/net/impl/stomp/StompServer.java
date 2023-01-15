@@ -7,6 +7,7 @@ import bgu.spl.net.srv.StompMessagingProtocolimplement;
 public class StompServer {
 
     public static void main(String[] args) {
+       
       
         Server.threadPerClient(
             7777, //port
@@ -14,12 +15,12 @@ public class StompServer {
            EncoderDecoderImplement::new //message encoder decoder factory
     ).serve();
 
-     Server.reactor(
-                 Runtime.getRuntime().availableProcessors(),
-                 7777, //port
-                 () -> new StompMessagingProtocolimplement(), //protocol factory
-                 EncoderDecoderImplement::new //message encoder decoder factory
-         ).serve();
+    //  Server.reactor(
+    //              Runtime.getRuntime().availableProcessors(),
+    //              7777, //port
+    //              () -> new StompMessagingProtocolimplement(), //protocol factory
+    //              EncoderDecoderImplement::new //message encoder decoder factory
+    //      ).serve();
 
 
 
