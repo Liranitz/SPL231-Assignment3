@@ -130,9 +130,9 @@ void read_from_socket(ConnectionHandler &connectionHandler){
 */
 // inputs
 //  join Germany_Japan
-    //  login 127.0.0.1:7777 lidan 123456
-    //  report /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/events1.json
-    // summary Germany_Japan lidan /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/event.txt
+    //  login 127.0.0.1:7777 lan 123456
+    //  report /home/users/bsc/2023/liranitz/Desktop/liran/SPL231-Assignment3-template/SPL231-Assignment3-student-template/.vscode/events1.json
+    // summary Germany_Japan ldan /home/users/bsc/2023/liranitz/events1.txt
 int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 2 - port
     EventController eventController;
     vector<string> ret;

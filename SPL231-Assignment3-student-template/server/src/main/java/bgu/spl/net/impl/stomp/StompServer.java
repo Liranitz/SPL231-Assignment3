@@ -7,8 +7,9 @@ import bgu.spl.net.srv.StompMessagingProtocolimplement;
 public class StompServer {
 
     public static void main(String[] args) {
+        //String[] args_new = args[0].split(" ");
        //System.out.println(args[0]);
-      if(args[0].equals("tpc")){
+      if(args[1].equals("tpc")){
         Server.threadPerClient(
             Integer.parseInt(args[0]), //port
            () -> new StompMessagingProtocolimplement(), //protocol factory
@@ -30,8 +31,5 @@ public class StompServer {
     //              () -> new StompMessagingProtocolimplement(), //protocol factory
     //              EncoderDecoderImplement::new //message encoder decoder factory
     //      ).serve();
-
-
-
     }
 }
