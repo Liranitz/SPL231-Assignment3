@@ -35,8 +35,8 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 String loggInName = curFrame.getName();
                 Client client = clientController.clientsByName.get(loggInName);
                 if (clientController.clientsByConnectionHandlerId.containsKey(connectionHandlerId)) {// already have a user
-                    Error eror = new Error("already have a user for this client");
-                    ret = eror;
+                    Error error = new Error("already have a user for this client" );
+                    ret = error;
                 } else if (client == null) {// new user- need to registr him
                     Client newClient = new Client(loggInName, curFrame.getPassword()); // new user want to register
                     clientController.clientsByName.put(loggInName, newClient);
@@ -68,9 +68,10 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     Reciept rec = new Reciept(unsSub.getRecId());
                     ret = rec;
                 } catch (Exception ex) {
-                    Error eror = new Error("You did not subscribe to that destination");// nee more detailed
+        
+                    Error error = new Error("receipt - id :" + unsSub.getRecId() + "\n" + "You did not subscribe to that destination");// nee more detailed
                                                                                         // erorr????????
-                    ret = eror;
+                    ret = error;
                 }
                 break;
             case "SUBSCRIBE":

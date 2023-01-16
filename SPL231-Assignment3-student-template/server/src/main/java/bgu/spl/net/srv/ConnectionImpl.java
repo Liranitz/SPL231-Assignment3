@@ -18,7 +18,7 @@ public class ConnectionImpl<T> implements Connections<T>{
         ConnectionHandler<T> temp = connection_Map.get(connectionId);
         if (temp != null) {
             temp.send(msg);
-            if(msg instanceof Error){
+            if( msg.toString().contains("ERROR")){
                 try{
                 temp.close();
                 }

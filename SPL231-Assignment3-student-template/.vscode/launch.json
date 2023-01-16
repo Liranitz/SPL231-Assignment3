@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-<<<<<<< HEAD
 
 
         {
@@ -14,8 +13,6 @@
             "mainClass": "bgu.spl.net.impl.stomp.StompServer",
             "projectName": "server"
         },
-=======
->>>>>>> 7782d9ff4cf37ef8c7c39dc4f77df45f8e788b49
         {
             "type": "java",
             "name": "Launch EchoServer",
