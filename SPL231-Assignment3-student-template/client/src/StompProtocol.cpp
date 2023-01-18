@@ -49,56 +49,7 @@ void StompProtocol::send_messages_by_event(string path_message, ConnectionHandle
         output_frame << "description:"
                      << "\n"
                      << e.get_discription() << "\n";
-
-        // string output_frame = "";
-        // output_frame = "SEND\n";
-        // output_frame += "destination:";
-        // output_frame += direction;
-        // output_frame += "\n";
-        // output_frame += "\n";
-        // output_frame += "user:";
-        // output_frame += cur_name;
-        // output_frame += "\n";
-        // output_frame += "team a:";
-        // output_frame += cur_events.team_a_name;
-        // output_frame += "\n";
-        // output_frame += "team b:";
-        // output_frame += cur_events.team_b_name;
-        // output_frame += "\n";
-        // output_frame += "time:";
-        // output_frame += std::to_string(e.get_time());
-        // output_frame += "\n";
-        // output_frame += "team a updates:";
-        // for (auto const& x : e.get_team_a_updates())
-        //     {
-        //         string cur_desc = "   " + x.first + ":" + x.second + "\n";
-        //         output_frame += cur_desc;
-        //     }
-        //     output_frame += "\n";
-        // output_frame += "team b updates:";
-        // for (auto const& x : e.get_team_b_updates())
-        //     {
-        //         string cur_desc = "   " + x.first + ":" + x.second + "\n";
-        //         output_frame += cur_desc;
-        //     }
-        // output_frame += "\n";
-        // output_frame += "description:";
-        // output_frame += e.get_discription();
-        // output_frame += "\n";
-        // output_frame += "\0";
-        // std::stringstream output_frame;
-        // output_frame << "SEND\n";
-        // output_frame << "destination:/" << direction << "\n\n";
-        // output_frame << "user:" << cur_name << "\n";
-        // output_frame << "team a:" << cur_events.team_a_name << "\n";
-        // output_frame << "team b:" << cur_events.team_b_name << "\n";
-        // output_frame << "time:" << e.get_time() << "\n";
-        // std::string output_string = output_frame.str();
-        // dont need to take in consideration???
-        // output_frame += "general game updates:";
-        // output_frame += std::to_string(e.get_time());
-        // output_frame += "\n";
-        // keep add stuff
+                     
         string output = output_frame.str();
         connectionHandler.sendLine(output);
         // send to ...

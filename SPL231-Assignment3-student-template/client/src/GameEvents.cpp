@@ -15,7 +15,7 @@ GameEvents::GameEvents(std::string _teamAname, std::string _teamBname) : teamAna
     eventReport(std::vector<std::string> ())
 {}
 
- void GameEvents::addReport(names_and_events &eventsReport){
+ void GameEvents::addReport(std::string  event){
 
      for(Event e : eventsReport.events){
         for (auto const& event : e.get_game_updates()) {
@@ -28,6 +28,10 @@ GameEvents::GameEvents(std::string _teamAname, std::string _teamBname) : teamAna
         for (auto const& event : e.get_team_b_updates()) {
             teamBSats[event.first] = event.second;
         }
+
+
+std::string name = event["event name"];
+        int time = event["time"];
 
 
 

@@ -39,6 +39,10 @@ void EventController::storeEvent(names_and_events &eve, std::string userName, st
     }
 }
 
+void EventController::SaveEvent(std::string , std::string topic){
+    
+}
+
 std::map<std::string,  std::map<std::string, GameEvents>> EventController::getMap(){
     return this->gameNameToUserEventMap;
 }
