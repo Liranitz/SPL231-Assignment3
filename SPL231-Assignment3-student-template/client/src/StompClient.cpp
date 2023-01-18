@@ -11,14 +11,23 @@ using namespace std;
 #include <thread>
 #include "../include/EventController.h"
 
-void parse_to_action(ConnectionHandler &connectionHandler , string message , ){
+// login 127.0.0.1:7777 omer 1234
+// join Germany_Japan
+// report /workspaces/SPL231-Assignment3-template/SPL231-Assignment3-student-template/client/data/events1.json
+
+void parse_to_action(ConnectionHandler &connectionHandler , string message, EventController &eventController){
         std::string output_frame = "";
         std::string cur_input = message;
         std::vector<std::string> result_message;
         result_message = boost::split(result_message, cur_input, boost::is_any_of("\n"));
         std::string typeAct = result_message[1];
+
+        if(result_message[0] == "MESSAGE"){
+           eventController.storeEvent(message);
+        }       
+     
         //here there is a \n before the string
-        if(typeAct == "RECIEPT"){
+       else if(typeAct == "RECIEPT"){
             std::vector<std::string> result_action;
             result_action = boost::split(result_action, result_message[2], boost::is_any_of(":"));
             string id_of_action = result_action[1];
@@ -28,6 +37,7 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message , ){
             std::vector<std::string> result_do;
             result_do = boost::split(result_do, act, boost::is_any_of(" "));
             std::string type_do = result_do[0];
+       
             //can remove it !!!
             if(type_do == "ADD"){
                 //params :
@@ -37,34 +47,28 @@ void parse_to_action(ConnectionHandler &connectionHandler , string message , ){
             else if (type_do == "REMOVE"){
                 connectionHandler.cur_client_data().topic_to_id_map.erase(result_do[1]);
             }
-            // else if(type_do == "CONNECT"){
-            //     connectionHandler.is_logged_in = true;
-            // }
+            
             else if(type_do == "CLOSE"){
                 //need to close only the socket?
                 connectionHandler.close();
             }
-            //find out which act it is and do it.
-        }
-        //attenation - here it is at the first place
-        if (result_message[0] == "CONNECTED"){
-            connectionHandler.is_logged_in = true;
-        }
-        else if(result_message[0] == "MESSAGE"){
-           eventController.storeEvent(cur_events, cur_name, direction);
-            
-        }
+           
+       }
 
-        //case if got a "SEND" add the event
+       if(result_message[0] == "CONNECTED") {
+            connectionHandler.is_logged_in = true;
+       }
+        
+
     }
 
-void input_from_keyboard(ConnectionHandler &connectionHandler, EventController &eventController){  
+void input_from_keyboard(ConnectionHandler &connectionHandler,  EventController &eventController){  
     while (1) { // need to be like that?
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
-        string return_line = StompProtocol::parse_to_frame(line , connectionHandler, eventController );
+        std::string return_line = StompProtocol::parse_to_frame(line , connectionHandler, eventController);
         if(return_line != ""){
             if (!connectionHandler.sendLine(return_line)) { //figure out if need to delete him
                 std::cout << "Disconnected. Exiting...\n" << std::endl;
@@ -99,7 +103,7 @@ vector<string> wait_for_login(){
 }
 
 
-void read_from_socket(ConnectionHandler &connectionHandler , EventController &eventController){
+void read_from_socket(ConnectionHandler &connectionHandler, EventController &eventController){
     while(1){
     std::string answer;
     //int len;
@@ -115,7 +119,7 @@ void read_from_socket(ConnectionHandler &connectionHandler , EventController &ev
         // A C string must end with a 0 char delimiter.  When we filled the answer buffer from the socket
 		// we filled up to the \n char - we must make sure now that a 0 char is also present. So we truncate last character.
         //answer.resize(len-1);
-        parse_to_action(connectionHandler , answer , eventController);
+        parse_to_action(connectionHandler , answer, eventController);
         std::cout << answer << std::endl;
         if (answer == "bye") {
             std::cout << "Exiting...\n" << std::endl;
@@ -171,10 +175,11 @@ int main (int argc, char *argv[]) { // numb of parms, args[0] - name , 1 - ip , 
 
     connectionHandler.sendLine(outer_frame_string);
 
-    std::thread read_input_thread(&input_from_keyboard ,  std::ref(connectionHandler), std::ref(eventController) );
-    std::thread read_socket_thread(&read_from_socket , std::ref(connectionHandler) , std::ref(eventController));
+    std::thread read_input_thread(&input_from_keyboard ,  std::ref(connectionHandler), std::ref(eventController));
+    std::thread read_socket_thread(&read_from_socket , std::ref(connectionHandler), std::ref(eventController));
     read_input_thread.join();
     read_socket_thread.join();
     return 0;
 }
+
 

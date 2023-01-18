@@ -16,13 +16,13 @@ using std::string;
 #include <boost/algorithm/string.hpp>
 #include <ClientReader.h>
 
-void StompProtocol::send_messages_by_event(string path_message, ConnectionHandler &connectionHandler, EventController &eventController)
+void StompProtocol::send_messages_by_event(string path_message, ConnectionHandler &connectionHandler)
 {
     names_and_events cur_events;
     cur_events = parseEventsFile(path_message);
     string direction = cur_events.team_a_name + "_" + cur_events.team_b_name;
     string cur_name = connectionHandler.cur_client_data().get_name();
-    eventController.storeEvent(cur_events, cur_name, direction);
+    // eventController.storeEvent(cur_events, cur_name, direction);
     for (Event e : cur_events.events)
     {
         std::ostringstream output_frame;
@@ -31,6 +31,7 @@ void StompProtocol::send_messages_by_event(string path_message, ConnectionHandle
         output_frame << "user:" << cur_name << "\n";
         output_frame << "team a:" << cur_events.team_a_name << "\n";
         output_frame << "team b:" << cur_events.team_b_name << "\n";
+        output_frame << "event name:" << e.get_name() << "\n";
         output_frame << "time:" << e.get_time() << "\n";
         output_frame << "team a updates:"
                      << "\n";
@@ -49,7 +50,6 @@ void StompProtocol::send_messages_by_event(string path_message, ConnectionHandle
         output_frame << "description:"
                      << "\n"
                      << e.get_discription() << "\n";
-                     
         string output = output_frame.str();
         connectionHandler.sendLine(output);
         // send to ...
@@ -59,9 +59,6 @@ void StompProtocol::send_messages_by_event(string path_message, ConnectionHandle
 // gets an input of the client's data
 std::string StompProtocol::parse_to_frame(string input_string, ConnectionHandler &connectionHandler, EventController &eventController)
 {
-    // ClientData cur_ch_client = connectionHandler.cur_client;
-    //   lir = "Liran";
-    //   map_of_subscribes.insert({lir , 5});
     std::string output_frame_str = "";
     std::ostringstream output_frame;
     std::string cur_input = input_string;
@@ -70,12 +67,6 @@ std::string StompProtocol::parse_to_frame(string input_string, ConnectionHandler
     std::string typeMessage = result[0];
     if (typeMessage == "login")
     {
-        // log in to the server
-        // if(c_h.isConnect()) check if the res[1] (host) is already connected
-        //  to another port.
-        //  socket error, cannoot
-        // try to connect the CH , res[1] ,' : ' res[1]
-        // c_h.connect();
         string name;
         string passcode;
         try
@@ -93,30 +84,6 @@ std::string StompProtocol::parse_to_frame(string input_string, ConnectionHandler
         output_frame << "login:" << result[2] << "\n";
         output_frame << "passcode:" << result[3] << "\n\n\0";
         output_frame_str = output_frame.str();
-        // ADD A CONNECT TO THE CH
-        // Figure out - if connect a new one ? then what happens? has to be in another window?
-        // vector<string> ret;
-        // ret = wait_for_login();
-        // vector<string> ports;
-        // ports = boost::split(ports, ret[1], boost::is_any_of(":"));
-        // std::string host = ports[0];
-        // const char* charArray = ports[1].c_str();
-        // short port = atoi(charArray);
-        // string name;
-        // name  =  ret[2];
-        // string pass;
-        // pass = ret[3];
-        // string outer_frame;
-        // ClientData cur_client = ClientData(result[2] ,result[3]);
-        // ConnectionHandler connectionHandler(result[3],result[3], &cur_client); // figure out how
-        // //KeyBoard_imp keybor(connectionHandler);
-        // if (!connectionHandler.connect()) {
-        //     std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
-        //     return 1;
-        //     // figure out how to get back to the function
-        // }
-        // Not sure if needed
-        // connectionHandler.cur_client_data().is_logged_in = true;
     }
     else if (typeMessage == "join")
     {
@@ -158,7 +125,7 @@ std::string StompProtocol::parse_to_frame(string input_string, ConnectionHandler
             // send to each topic event
             string path;
             path = result[1];
-            send_messages_by_event(path, connectionHandler, eventController);
+            send_messages_by_event(path, connectionHandler);
         }
         catch (...)
         {
@@ -198,6 +165,8 @@ std::string StompProtocol::parse_to_frame(string input_string, ConnectionHandler
             cout << "No events for the current game";
         }
     }
+
+
     else if (typeMessage == "logout")
     {
         // gets the receipt login id from server

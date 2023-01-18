@@ -7,24 +7,27 @@ import bgu.spl.net.srv.StompMessagingProtocolimplement;
 public class StompServer {
 
     public static void main(String[] args) {
+
+     // if(args[0].equals("tpc")){
+
         //String[] args_new = args[0].split(" ");
        //System.out.println(args[0]);
-      if(args[1].equals("tpc")){
+      //if(args[1].equals("tpc")){
         Server.threadPerClient(
-            Integer.parseInt(args[0]), //port
+           7777, //port
            () -> new StompMessagingProtocolimplement(), //protocol factory
            EncoderDecoderImplement::new //message encoder decoder factory
             ).serve();
-      }
+     // }
 
-      else{
+    //  else if(args[0].equals("reactor")){
         Server.reactor(
                  Runtime.getRuntime().availableProcessors(),
-                 Integer.parseInt(args[0]), //port
+                7777, //port
                  () -> new StompMessagingProtocolimplement(), //protocol factory
                  EncoderDecoderImplement::new //message encoder decoder factory
          ).serve();
-      }
+     // }
     //  Server.reactor(
     //              Runtime.getRuntime().availableProcessors(),
     //              7777, //port

@@ -79,10 +79,10 @@ public class EncoderDecoderImplement implements MessageEncoderDecoder<Frame> {
                 return new Error("malformed frame received");
             }
         }
-            
         return null; //need to return erorr??????????????
         }
 
+       
 
             @Override
             public byte[] encode (Frame message){

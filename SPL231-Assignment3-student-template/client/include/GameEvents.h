@@ -17,7 +17,8 @@ public:
     GameEvents();
     GameEvents(const GameEvents &other);
     GameEvents(std::string _teamAname, std::string _teamBname);
-    void addReport(names_and_events &event);
+    void addReport(std::string eventStr);
+    std::vector<std::string> split(const std::string& str, char delimiter);
     std::string toString();
     std::string prinKeyBesideValue(std::map< std::string,  std::string > map);
     std::string printReports();

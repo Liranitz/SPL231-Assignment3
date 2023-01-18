@@ -7,8 +7,6 @@ import bgu.spl.net.srv.FrameForService.Error;
 import bgu.spl.net.srv.FrameForService.Message;
 import bgu.spl.net.srv.FrameForService.Reciept;
 import bgu.spl.net.srv.FramesForClient.*;
-
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StompMessagingProtocolimplement implements StompMessagingProtocol<Frame> {
@@ -37,8 +35,8 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                 String loggInName = curFrame.getName();
                 Client client = clientController.clientsByName.get(loggInName);
                 if (clientController.clientsByConnectionHandlerId.containsKey(connectionHandlerId)) {// already have a user
-                    Error eror = new Error("already have a user for this client");
-                    ret = eror;
+                    Error error = new Error("already have a user for this client" );
+                    ret = error;
                 } else if (client == null) {// new user- need to registr him
                     Client newClient = new Client(loggInName, curFrame.getPassword()); // new user want to register
                     clientController.clientsByName.put(loggInName, newClient);
@@ -70,9 +68,10 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     Reciept rec = new Reciept(unsSub.getRecId());
                     ret = rec;
                 } catch (Exception ex) {
-                    Error eror = new Error("You did not subscribe to that destination\n\n" + message.toString());// nee more detailed
+        
+                    Error error = new Error("receipt - id :" + unsSub.getRecId() + "\n" + "You did not subscribe to that destination");// nee more detailed
                                                                                         // erorr????????
-                    ret = eror;
+                    ret = error;
                 }
                 break;
             case "SUBSCRIBE":
@@ -121,21 +120,13 @@ public class StompMessagingProtocolimplement implements StompMessagingProtocol<F
                     clientsOfTopic = clientController.topics.get(topic);
                 }
                 catch (Exception exception){
-                    ret = new Error("message : this topic is not exist\n\n" + message.toString()  );
-                    int x = connectionHandlerId;
-                    ConnectionHandler<Frame> cur = connectionsImpl.connection_Map.get(x);
-                    try{
-                    cur.close();
-                    }
-                    catch(IOException exp){
-                        exp.printStackTrace();
-                    }
+                    ret = new Error("this topic is not exist");
                 }
 
                  
 
                 if (clientsOfTopic == null){
-                    ret = new Error("message : this topic is not exist\n\n" + message.toString());
+                    ret = new Error("this topic is not exist");
                 }
                 else if (!clientsOfTopic.containsKey(connectionHandlerId) ){
                     ret = new Error("you are not subscribe to this topic" + message.toString());
